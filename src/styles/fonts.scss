@@ -1,0 +1,17 @@
+@import url("https://fonts.googleapis.com/css2?family=Bowlby+One&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
+
+// Families
+$title-font: "Bowlby One", sans-serif;
+$paragraph-font: "Montserrat", sans-serif;
+$roboto-font: "Roboto", sans-serif;
+$opensans-font: "Open Sans", sans-serif;
+
+:export {
+  titleFont: $title-font;
+  paragraphFont: $paragraph-font;
+  robotoFont: $roboto-font;
+  openSans: $opensans-font;
+}

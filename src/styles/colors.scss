@@ -1,0 +1,40 @@
+// Light Colors
+$first-color: #d60000;
+$second-color: #47cf77;
+$third-color: #6b6bff;
+
+// Light backgrounds
+$background-first-color: #fafafa;
+$background-second-color: #fafafa;
+
+// Dark Colors
+$first-color-dt: #d60000;
+$second-color-dt: #47cf77;
+$third-color-dt: #6b6bff;
+
+// Dark backgrounds
+$background-first-color-dt: #080808;
+$background-second-color-dt: #171717;
+$background-third-color-dt: #2f2f2f;
+$background-fourth-color-dt: #424242;
+
+// Font Colors
+$title-color: #ffffff;
+$paragraph-color: #d8d8d8;
+
+:export {
+  firstColor: $first-color;
+  secondColor: $second-color;
+  thirdColor: $third-color;
+  backgroundFirstColor: $background-first-color;
+  backgroundSecondColor: $background-second-color;
+  firstColorDt: $first-color-dt;
+  secondColorDt: $second-color-dt;
+  thirdColorDt: $third-color-dt;
+  backgroundFirstColorDt: $background-first-color-dt;
+  backgroundSecondColorDt: $background-second-color-dt;
+  backgroundThirdColorDt: $background-third-color-dt;
+  backgroundFourthColorDt: $background-fourth-color-dt;
+  titleColor: $title-color;
+  paragraphColor: $paragraph-color;
+}
