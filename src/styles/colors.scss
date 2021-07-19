@@ -1,7 +1,8 @@
 // Light Colors
-$first-color: #d60000;
+$first-color: #7712ba;
 $second-color: #47cf77;
 $third-color: #6b6bff;
+$primary-gradient: linear-gradient(90deg, rgba(77,18,114,1) 0%, rgba(119,18,186,1) 100%);
 
 // Light backgrounds
 $background-first-color: #fafafa;
@@ -28,6 +29,7 @@ $paragraph-color: #d8d8d8;
   thirdColor: $third-color;
   backgroundFirstColor: $background-first-color;
   backgroundSecondColor: $background-second-color;
+  primaryGradient: $primary-gradient;
   firstColorDt: $first-color-dt;
   secondColorDt: $second-color-dt;
   thirdColorDt: $third-color-dt;
