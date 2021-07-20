@@ -1,29 +1,29 @@
-import { createMuiTheme } from '@material-ui/core/styles'
-import colors from './colors.scss'
-import fonts from './fonts.scss'
+import { createTheme } from '@material-ui/core'
+import colors from './colors.module.scss'
+import fonts from './fonts.module.scss'
 
-const darkTheme = createMuiTheme({
+// declare module '@material-ui/core/styles/createPalette' {
+//     interface Palette {
+//         tertiary: Palette['tertiary']
+//     }
+//     interface PaletteOptions {
+//         tertiary: PaletteOptions['tertiary']
+//     }
+// }
+
+const darkTheme = createTheme({
     palette: {
         primary: { main: colors.firstColor },
         secondary: { main: colors.secondColor },
-        tertiary: { main: colors.thirdColor },
+        // tertiary: { main: colors.thirdColor },
         background: {
             default: colors.backgroundFirstColor,
-            primary: colors.backgroundFirstColor,
-            secondary: colors.backgroundSecondColor,
+            // primary: colors.backgroundFirstColor,
+            // secondary: colors.backgroundSecondColor,
         },
-        text: {
-            primary: colors.fontGreyColor2,
-            secondary: colors.fontGreyColor1,
-        },
-        // background: {
-        //     default: { main: colors.backgroundFirstColor },
-        //     primary: { main: colors.backgroundFirstColor },
-        //     secondary: { main: colors.backgroundSecondColor },
-        // },
         // text: {
-        //     primary: { main: colors.fontGreyColor2 },
-        //     secondary: { main: colors.fontGreyColor1 },
+        //     primary: colors.fontGreyColor2,
+        //     secondary: colors.fontGreyColor1,
         // },
     },
     typography: {
@@ -41,4 +41,4 @@ const darkTheme = createMuiTheme({
     },
 })
 
-export default darkTheme;
+export default darkTheme
