@@ -6,7 +6,7 @@ const darkTheme = createMuiTheme({
     palette: {
         primary: { main: colors.firstColor },
         secondary: { main: colors.secondColor },
-        tertiary: { main: colors.thirdColor, light: `${colors.thirdColor}cc` },
+        tertiary: { main: colors.thirdColor },
         background: {
             default: colors.backgroundFirstColor,
             primary: colors.backgroundFirstColor,
@@ -16,6 +16,15 @@ const darkTheme = createMuiTheme({
             primary: colors.fontGreyColor2,
             secondary: colors.fontGreyColor1,
         },
+        // background: {
+        //     default: { main: colors.backgroundFirstColor },
+        //     primary: { main: colors.backgroundFirstColor },
+        //     secondary: { main: colors.backgroundSecondColor },
+        // },
+        // text: {
+        //     primary: { main: colors.fontGreyColor2 },
+        //     secondary: { main: colors.fontGreyColor1 },
+        // },
     },
     typography: {
         h1: { fontFamily: fonts.titleFont, fontWeight: 800, fontSize: '26px' },
@@ -32,4 +41,4 @@ const darkTheme = createMuiTheme({
     },
 })
 
-export default darkTheme
+export default darkTheme;
