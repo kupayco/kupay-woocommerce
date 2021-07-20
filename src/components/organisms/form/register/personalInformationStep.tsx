@@ -87,7 +87,7 @@ const PersonalInformationStep = (props: PersonalInformationStepProps) => {
             <Grid item xs={12} style={{ marginTop: theme.spacing(2) }}>
                 <FormControlLabel
                     control={<Checkbox checked={props.data.hasDifferentBillingAddress} onChange={props.handleChangeBillingCheckbox} name="checkedA" />}
-                    label="Mis datos de facturación son diferentes a los del envío"
+                    label="Mis datos de facturación son diferentes"
                 />
             </Grid>
             {props.data.hasDifferentBillingAddress && (

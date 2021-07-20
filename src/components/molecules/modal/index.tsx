@@ -51,7 +51,8 @@ const Modal = (props: ModalProps) => {
                 aria-labelledby="kupai-modal"
             >
                 <DialogTitle id="kupai-modal-title" className={classes.title}>
-                    {props.title}
+                    {/* {props.title} */}
+                    <img src='/kupay-logo-negro.png' style={{ height: '36px' }} />
                     <IconButton aria-label="close-modal" onClick={props.handleClose} className={classes.iconButton}>
                         <CloseIcon />
                     </IconButton>
