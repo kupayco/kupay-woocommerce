@@ -1,6 +1,6 @@
 // Utils & Config
 import React from 'react';
-import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
+import { createStyles, Theme, makeStyles, useTheme } from '@material-ui/core/styles';
 
 // External Components
 import Grid from '@material-ui/core/Grid';
@@ -46,10 +46,11 @@ type PersonalInformationStepProps = {
 
 const PersonalInformationStep = (props: PersonalInformationStepProps) => {
     const classes = useStyles();
+    const theme = useTheme();
 
     return (
         <Grid container spacing={2}>
-            <Grid item xs={12}>
+            <Grid item xs={12} style={{ marginBottom: theme.spacing(3) }}>
                 <TitleWithSubtitle title='Completa tu información personal' subtitle='Por única vez' />
             </Grid>
             <Grid item xs={12}>
@@ -66,7 +67,7 @@ const PersonalInformationStep = (props: PersonalInformationStepProps) => {
             <Grid item xs={12}>
                 <TextInput name='phone' value={props.data.phone} label='Número de teléfono' handleChange={props.handleChangeInput} />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} style={{ marginTop: theme.spacing(2) }}>
                 <Typography>
                     Información de entrega
                 </Typography>
@@ -83,7 +84,7 @@ const PersonalInformationStep = (props: PersonalInformationStepProps) => {
             <Grid item xs={6}>
                 <TextInput name='deliveryCity' value={props.data.deliveryCity} label='Ciudad' handleChange={props.handleChangeInput} />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} style={{ marginTop: theme.spacing(2) }}>
                 <FormControlLabel
                     control={<Checkbox checked={props.data.hasDifferentBillingAddress} onChange={props.handleChangeBillingCheckbox} name="checkedA" />}
                     label="Mis datos de facturación son diferentes a los del envío"
@@ -116,7 +117,7 @@ const PersonalInformationStep = (props: PersonalInformationStepProps) => {
                     </Grid>
                 </>
             )}
-            <Grid item xs={12}>
+            <Grid item xs={12} style={{ marginTop: theme.spacing(2) }}>
                 <FormButton text='Continuar y pagar' handleClick={props.handleSubmitPersonalInformationData} />
             </Grid>
         </Grid>

@@ -39,36 +39,14 @@ const Form = (props: FormProps) => {
 
     })
     const [paymentData, setPaymentData] = useState({
-        cardNumber: 0,
+        cardNumber: '',
         cardExpiration: '',
-        cardSecurityNumber: 0,
+        cardSecurityNumber: '',
     })
     const [registrationStep, setRegistrationStep] = useState(1);
 
     useEffect(() => {
         setRegistrationStep(1)
-        setAccessData({
-            ...accessData,
-            email: '',
-            password: ''
-        })
-        setPersonalInformationData({
-            ...personalInformationData,
-            name: '',
-            surname: '',
-            phone: '',
-            deliveryAddress: '',
-            deliveryAddressDescription: '',
-            deliveryZipCode: '',
-            deliveryCity: '',
-            hasDifferentBillingAddress: false,
-            billingName: '',
-            billingSurname: '',
-            billingAddress: '',
-            billingAddressDescription: '',
-            billingZipCode: '',
-            billingCity: '',
-        })
     }, [props.open]);
 
     const handleChangeInputAccessStep = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -117,7 +95,7 @@ const Form = (props: FormProps) => {
     }
 
     const handleSubmitAccessData = () => {
-        alert(`data: ${JSON.stringify(accessData)}`);
+        // alert(`data: ${JSON.stringify(accessData)}`);
         handleChangeStep(registrationStep, 1);
         setAccessData({
             ...accessData,
@@ -138,7 +116,7 @@ const Form = (props: FormProps) => {
                 billingCity: personalInformationData.deliveryCity,
             });
         }
-        alert(`data: ${JSON.stringify(personalInformationData)}`);
+        // alert(`data: ${JSON.stringify(personalInformationData)}`);
         handleChangeStep(registrationStep, 1);
         setPersonalInformationData({
             ...personalInformationData,
@@ -160,11 +138,11 @@ const Form = (props: FormProps) => {
     }
 
     const handleSubmitPayment = () => {
-        alert(`data: ${JSON.stringify(paymentData)}`);
+        // alert(`data: ${JSON.stringify(paymentData)}`);
         setPaymentData({
-            cardNumber: 0,
+            cardNumber: '',
             cardExpiration: '',
-            cardSecurityNumber: 0,
+            cardSecurityNumber: '',
         })
         props.handleClose();
     }
