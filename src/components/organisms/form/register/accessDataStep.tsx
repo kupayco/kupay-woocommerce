@@ -12,6 +12,7 @@ import TitleWithSubtitle from '../../../molecules/titleWithSubtitle'
 import IconWithText from '../../../molecules/iconWithText';
 import TextInput from '../../../atoms/inputs/textInput';
 import FormButton from '../../../atoms/formButton';
+import PasswordInput from '../../../atoms/inputs/passwordInput';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -43,7 +44,7 @@ const AccessDataStep = (props: AccessDataStepProps) => {
                 <TextInput name='email' value={props.data.email} label='Correo electrónico' handleChange={props.handleChangeInput} />
             </Grid>
             <Grid item xs={12} style={{ marginBottom: theme.spacing(3) }}>
-                <TextInput name='password' value={props.data.password} label='Contraseña' handleChange={props.handleChangeInput} />
+                <PasswordInput name='password' passwordValue={props.data.password} label='Contraseña' handleChange={props.handleChangeInput} />
             </Grid>
             <Grid item xs={4}>
                 <IconWithText icon='/fast.svg' text='Ahorre tiempo' />
