@@ -12,11 +12,19 @@ Version: 0.0.1
 Author URI: https://github.com/kupayco
 */
 
-function kupay() {
-	echo "<p id='kupay'>Kupay!</p>";
-}
+// Requires
+require_once ('vendor/autoload.php');
+require_once('includes/settings.php');
+require_once('includes/checkout.php');
+require_once('assets/assets.php');
 
-// Now we set that function up to execute when the admin_notices action is called
-add_action( 'admin_notices', 'kupay' );
+add_action( 'wp_enqueue_scripts', 'enqueue_js' );
+add_action( 'wp_enqueue_scripts', 'enqueue_css' );
 
+add_action('admin_menu', 'create_settings_menu');
+add_action( 'woocommerce_after_add_to_cart_button', 'checkout_pdp', 20);
+
+
+// Templates
+require_once('templates/checkout-template.php');
 
