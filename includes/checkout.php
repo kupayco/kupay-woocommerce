@@ -3,61 +3,96 @@
 use Automattic\WooCommerce\Client;
 
 // to update shipping cost on cart review WC_AJAX::update_order_review();
-function build_order_data(): array {
+/**
+ * @throws Exception
+ */
+function build_kupay_order_data($kupay_request): array {
 
-	return [
-		'payment_method' => 'bacs',
-		'payment_method_title' => 'Direct Bank Transfer',
-		'set_paid' => true,
-		'billing' => [
-			'first_name' => 'Jaf',
-			'last_name' => 'Gonçalves',
-			'address_1' => 'Rafael de Riego 34',
-			'address_2' => '',
-			'city' => 'Madrid',
-			'state' => 'MA',
-			'postcode' => '28045',
-			'country' => 'ES',
-			'email' => 'jaf@kupay.co',
-			'phone' => '+34651326460'
+	$product_detail = WC()->product_factory->get_product($kupay_request['product']['id']);
+
+	wc_load_cart();
+	WC()->cart->add_to_cart( $kupay_request['product']['id'], $kupay_request['product']['quantity']);
+
+	WC()->customer->set_props(
+		array(
+			'shipping_postcode'  => $kupay_request['customer']['shipping_data']['zipCode'],
+			'shipping_city'      => $kupay_request['customer']['shipping_data']['city'],
+			'shipping_address_1' => $kupay_request['customer']['shipping_data']['address'],
+			'shipping_address_2' => $kupay_request['customer']['shipping_data']['addressDescription'],
+		)
+	);
+
+
+	WC()->customer->save();
+	WC()->cart->calculate_shipping();
+	WC()->cart->calculate_totals();
+
+
+	WC()->checkout()->check_cart_items();
+
+	return
+	[
+		'store_order_id' => null,
+		'state' => 'ORDER_CREATED',
+		'store' => $kupay_request['store']['id'],
+		'user' => $kupay_request['customer']['email'],
+		'delivery_data' => [
+			'cost' => WC()->cart->get_shipping_total(),
 		],
-
-		'shipping' => [
-			'first_name' => 'Jaf',
-			'last_name' => 'Gonçalves',
-			'address_1' => 'General Martinez Campos 36',
-			'address_2' => '',
-			'city' => 'Madrid',
-			'state' => 'MA',
-			'postcode' => '28045',
-			'country' => 'ES'
-		],
-
-		'line_items' => [
-			[
-				'product_id' => 11,
-				'quantity' => 2
+		'product_data' => [
+			0 => [
+				'description' => $product_detail->get_description(),
+				'id' => $product_detail->get_id(),
+				'image_url' => $kupay_request['product']['image_url'],
+				'name' => $product_detail->get_name(),
+				'price' => $product_detail->get_price(),
+				'quantity' => $kupay_request['product']['quantity'],
 			]
-		]
+		],
+
 	];
 
 }
 
-function checkout_pdp(){
 
-	$woocommerce = new Client( 'http://localhost:8888/wordpress', 'ck_b2adad5d1130ced882084877ad7b4e6cef85b319', 'cs_6aa33442647b52cf9d30e0b77d394527141d7a07' );
-	$order = $woocommerce->post('orders', build_order_data());
+function kupay_product_checkout(WP_REST_Request $request){
+	$kupay_request = json_decode($request->get_body(), true);
 
-	$href = redirect_to_place_order_page_url('48', 'wc_order_wJovWGCr2fl5n');
-	$class = 'ingle_add_to_cart_button-12 button alt';
-	$id = 'kupay_pdp_checkout';
-	$style = 'display: inline-block; margin-top: 12px;';
-	$button_text = __( "Buy in 1-Click with KuPay" );
+	$kupay_order_data = build_kupay_order_data($kupay_request);
+	$kupay_order_response = create_order_in_kupay_api($kupay_order_data);
 
-	echo '<br><a rel="no-follow" href="'.$href.'" class="'.$class.'" id="'.$id.'" style="'.$style.'">'.$button_text.'</a>';
+	if($kupay_order_response['status_code'] == '200' && $kupay_order_response['data']['payment_status'] == 'PAID'){
+
+//		$woocommerce_order_data = build_woocommerce_order_data($kupay_order_response['data']);
+		$woocommerce_order_response = checkout_order_in_woocommerce($kupay_order_data);
+
+		if(!empty($woocommerce_order_response['id'])){
+			checkout_order_in_kupay_api($kupay_order_data);
+		}
+
+	}
 
 }
 
-function redirect_to_place_order_page_url($order_id, $order_key): string{
-	return get_site_url() . '/checkout/order-received/' . $order_id . '?key=' . $order_key;
+function create_order_in_kupay_api($order_data): array {
+	$kupay_api_client = new KuPayApiClient();
+	return $kupay_api_client->executePostRequest($order_data, 'order');
+}
+
+/**
+ * @throws Exception
+ */
+function checkout_order_in_woocommerce($kupay_order_data): array {
+
+	$order = wc_create_order();
+	WC()->checkout()->create_order_line_items($order, WC()->cart);
+
+	return [];
+
+}
+
+function checkout_order_in_kupay_api($kupay_order_data){
+	$kupay_api_client = new KuPayApiClient();
+	return $kupay_api_client->executePostRequest($kupay_order_data, 'order/' . $kupay_order_data['id']);
+
 }
