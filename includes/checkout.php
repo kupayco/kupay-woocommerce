@@ -6,11 +6,12 @@ use Automattic\WooCommerce\Client;
 /**
  * @throws Exception
  */
-function build_kupay_order_data($kupay_request): array {
+function build_pdp_order_data($kupay_request): array {
 
 	$product_detail = WC()->product_factory->get_product($kupay_request['product']['id']);
 
 	wc_load_cart();
+
 	WC()->cart->add_to_cart( $kupay_request['product']['id'], $kupay_request['product']['quantity']);
 
 	WC()->customer->set_props(
@@ -27,72 +28,109 @@ function build_kupay_order_data($kupay_request): array {
 	WC()->cart->calculate_shipping();
 	WC()->cart->calculate_totals();
 
-
-	WC()->checkout()->check_cart_items();
-
 	return
 	[
-		'store_order_id' => null,
+		'store' => 12345,
 		'state' => 'ORDER_CREATED',
-		'store' => $kupay_request['store']['id'],
 		'user' => $kupay_request['customer']['email'],
-		'delivery_data' => [
-			'cost' => WC()->cart->get_shipping_total(),
+		'deliveryData' => [
+			'cost' => (float) WC()->cart->get_shipping_total(),
 		],
-		'product_data' => [
+
+		'productData' => [
 			0 => [
-				'description' => $product_detail->get_description(),
-				'id' => $product_detail->get_id(),
-				'image_url' => $kupay_request['product']['image_url'],
+				'description' => $product_detail->get_short_description(),
+				'id' => (string) $product_detail->get_id(),
+//				'image_url' => $kupay_request['product']['image_url'],
 				'name' => $product_detail->get_name(),
-				'price' => $product_detail->get_price(),
+				'price' => (float) $product_detail->get_price(),
 				'quantity' => $kupay_request['product']['quantity'],
 			]
+		],
+		'totalsData' => [
+			'subtotal' => (float) WC()->cart->get_subtotal(),
+			'shippingCost' => (float)  WC()->cart->get_shipping_total(),
+			'taxes' => (float)  WC()->cart->get_total_tax(),
+			'total' => (float) WC()->cart->total
 		],
 
 	];
 
+
 }
 
+function kupay_pdp_order_create(WP_REST_Request $kupay_request): void {
 
-function kupay_product_checkout(WP_REST_Request $request){
-	$kupay_request = json_decode($request->get_body(), true);
+	$kupay_request = json_decode($kupay_request->get_body(), true);
+	$kupay_order_data = build_pdp_order_data($kupay_request);
 
-	$kupay_order_data = build_kupay_order_data($kupay_request);
-	$kupay_order_response = create_order_in_kupay_api($kupay_order_data);
+	header("Access-Control-Allow-Origin: *");
+	wp_send_json($kupay_order_data);
 
-	if($kupay_order_response['status_code'] == '200' && $kupay_order_response['data']['payment_status'] == 'PAID'){
+}
 
-//		$woocommerce_order_data = build_woocommerce_order_data($kupay_order_response['data']);
-		$woocommerce_order_response = checkout_order_in_woocommerce($kupay_order_data);
+function kupay_pdp_order_checkout(WP_REST_Request $kupay_request): void {
 
-		if(!empty($woocommerce_order_response['id'])){
-			checkout_order_in_kupay_api($kupay_order_data);
-		}
+	try {
 
+		$kupay_request = json_decode($kupay_request->get_body(), true);
+		header("Access-Control-Allow-Origin: *");
+		checkout_order_in_woocommerce( $kupay_request );
+
+		wp_send_json($kupay_request);
+
+	} catch ( Exception $e ) {
+
+		wp_send_json([
+			'code'=> 500,
+			'message' => 'There was an error while checking out the order.'
+		]);
 	}
 
-}
 
-function create_order_in_kupay_api($order_data): array {
-	$kupay_api_client = new KuPayApiClient();
-	return $kupay_api_client->executePostRequest($order_data, 'order');
 }
 
 /**
  * @throws Exception
  */
-function checkout_order_in_woocommerce($kupay_order_data): array {
+function checkout_order_in_woocommerce($kupay_request) {
+
+
+	$shipping_address = array(
+		'first_name' => $kupay_request['userData']['firstName'],
+		'last_name'  => $kupay_request['userData']['lastName'],
+		'email'      => $kupay_request['userData']['email'],
+		'address_1'  => $kupay_request['userData']['shippingAddress']['address'],
+		'address_2'  => $kupay_request['userData']['shippingAddress']['address'],
+		'city'       => $kupay_request['userData']['shippingAddress']['city'],
+		'state'      => $kupay_request['userData']['shippingAddress']['zipCode'],
+		'postcode'   => $kupay_request['userData']['shippingAddress']['state'],
+		'country'    => $kupay_request['userData']['shippingAddress']['country']
+	);
+
+	$billing_address = array(
+		'first_name' => $kupay_request['userData']['firstName'],
+		'last_name'  => $kupay_request['userData']['lastName'],
+		'email'      => $kupay_request['userData']['email'],
+		'address_1'  => $kupay_request['userData']['billingAddress']['address'],
+		'address_2'  => $kupay_request['userData']['billingAddress']['address'],
+		'city'       => $kupay_request['userData']['billingAddress']['city'],
+		'state'      => $kupay_request['userData']['billingAddress']['zipCode'],
+		'postcode'   => $kupay_request['userData']['billingAddress']['state'],
+		'country'    => $kupay_request['userData']['billingAddress']['country']
+	);
 
 	$order = wc_create_order();
-	WC()->checkout()->create_order_line_items($order, WC()->cart);
 
-	return [];
+	foreach ($kupay_request['productData'] as $product_data){
+		$order->add_product( wc_get_product($product_data['id']), $product_data['quantity']);
+	}
 
-}
-
-function checkout_order_in_kupay_api($kupay_order_data){
-	$kupay_api_client = new KuPayApiClient();
-	return $kupay_api_client->executePostRequest($kupay_order_data, 'order/' . $kupay_order_data['id']);
+	$order->set_address( $shipping_address, 'shipping' );
+	$order->set_address( $billing_address );
+	$order->calculate_totals();
+	$order->set_status("processing");
+	$order->set_payment_method_title("Kupay - One-Click Checkout");
+	$order->save();
 
 }
