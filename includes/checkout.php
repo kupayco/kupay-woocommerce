@@ -1,47 +1,40 @@
 <?php
 
-use Automattic\WooCommerce\Client;
-
-// to update shipping cost on cart review WC_AJAX::update_order_review();
 /**
+ * @param $kupay_request
+ *
+ * @return array
  * @throws Exception
  */
 function build_pdp_order_data($kupay_request): array {
 
-	$product_detail = WC()->product_factory->get_product($kupay_request['product']['id']);
+	if ( is_null( WC()->cart ) ) {
+		wc_load_cart();
+	}
 
-	wc_load_cart();
+	$product_detail = WC()->product_factory->get_product($kupay_request['product']['id']);
 
 	WC()->cart->add_to_cart( $kupay_request['product']['id'], $kupay_request['product']['quantity']);
 
-	WC()->customer->set_props(
-		array(
-			'shipping_postcode'  => $kupay_request['customer']['shipping_data']['zipCode'],
-			'shipping_city'      => $kupay_request['customer']['shipping_data']['city'],
-			'shipping_address_1' => $kupay_request['customer']['shipping_data']['address'],
-			'shipping_address_2' => $kupay_request['customer']['shipping_data']['addressDescription'],
-		)
-	);
+	kupay_calculate_cart_shipping( $kupay_request['customer']['shipping_data'] );
 
-
-	WC()->customer->save();
-	WC()->cart->calculate_shipping();
-	WC()->cart->calculate_totals();
+	$image_id  = $product_detail->get_image_id();
+	$image_url = wp_get_attachment_image_url( $image_id, 'full' );
 
 	return
 	[
-		'store' => 12345,
+		'origin' => 'PDP',
 		'state' => 'ORDER_CREATED',
 		'user' => $kupay_request['customer']['email'],
 		'deliveryData' => [
 			'cost' => (float) WC()->cart->get_shipping_total(),
+			'date' => json_encode(WC()->cart->get_shipping_packages())
 		],
-
 		'productData' => [
 			0 => [
 				'description' => $product_detail->get_short_description(),
 				'id' => (string) $product_detail->get_id(),
-//				'image_url' => $kupay_request['product']['image_url'],
+				'imageUrl' => $image_url,
 				'name' => $product_detail->get_name(),
 				'price' => (float) $product_detail->get_price(),
 				'quantity' => $kupay_request['product']['quantity'],
@@ -59,22 +52,132 @@ function build_pdp_order_data($kupay_request): array {
 
 }
 
-function kupay_pdp_order_create(WP_REST_Request $kupay_request): void {
+/**
+ * @param $kupay_request
+ *
+ * @return array
+ */
+function build_cart_order_data($kupay_request): array {
 
-	$kupay_request = json_decode($kupay_request->get_body(), true);
-	$kupay_order_data = build_pdp_order_data($kupay_request);
+	if ( is_null( WC()->cart ) ) {
+		wc_load_cart();
+	}
 
-	header("Access-Control-Allow-Origin: *");
-	wp_send_json($kupay_order_data);
+	$items = WC()->cart->get_cart();
+
+	$product_data = [];
+
+	foreach ($items as $item){
+
+		$product_detail = WC()->product_factory->get_product($item['product_id']);
+		$image_id  = $product_detail->get_image_id();
+		$image_url = wp_get_attachment_image_url( $image_id, 'full' );
+
+		$product_data[] = [
+			'description' => $product_detail->get_short_description(),
+			'id' => (string) $product_detail->get_id(),
+			'imageUrl' => $image_url,
+			'name' => $product_detail->get_name(),
+			'price' => (float) $product_detail->get_price(),
+			'quantity' => $item['quantity'],
+		];
+	}
+
+	kupay_calculate_cart_shipping( $kupay_request['customer']['shipping_data'] );
+
+	return
+		[
+			'origin' => $kupay_request['origin'],
+			'state' => 'ORDER_CREATED',
+			'user' => $kupay_request['customer']['email'],
+			'deliveryData' => [
+				'cost' => (float) WC()->cart->get_shipping_total(),
+			],
+			'productData' => $product_data,
+			'totalsData' => [
+				'subtotal' => (float) WC()->cart->get_subtotal(),
+				'shippingCost' => (float)  WC()->cart->get_shipping_total(),
+				'taxes' => (float)  WC()->cart->get_total_tax(),
+				'total' => (float) WC()->cart->total
+			],
+
+		];
 
 }
 
-function kupay_pdp_order_checkout(WP_REST_Request $kupay_request): void {
+/**
+ * @param $shipping_data
+ */
+function kupay_calculate_cart_shipping( $shipping_data ): void {
+
+	WC()->customer->set_props(
+		array(
+			'shipping_postcode'  => $shipping_data['zipCode'],
+			'shipping_city'      => $shipping_data['city'],
+			'shipping_address_1' => $shipping_data['address'],
+			'shipping_address_2' => $shipping_data['addressDescription'],
+		)
+	);
+
+	WC()->customer->save();
+	WC()->cart->calculate_shipping();
+	WC()->cart->calculate_totals();
+}
+
+/**
+ * @param WP_REST_Request $kupay_request
+ *
+ * @throws Exception
+ */
+function kupay_order_create(WP_REST_Request $kupay_request): WP_REST_Response {
+
+	try{
+
+		$wp_rest_response = new WP_REST_Response();
+		$wp_rest_response->set_status(200);
+		$wp_rest_response->header('Kupay-API-KEY', get_option('kupay_options_api_key'));
+
+		$kupay_request = json_decode($kupay_request->get_body(), true);
+
+		if(!empty($kupay_request)){
+
+			if(!empty($kupay_request['origin'])){
+				if($kupay_request['origin'] == "CART" || $kupay_request['origin'] == "CHECKOUT"){
+
+					$data = build_cart_order_data($kupay_request);
+
+					$wp_rest_response->set_data($data);
+
+
+					return new WP_REST_Response($data, 200, );
+
+				}
+			}
+
+			return new WP_REST_Response(build_pdp_order_data($kupay_request));
+
+		}
+	} catch ( Exception $e ) {
+
+		wp_send_json([
+			'code'=> 500,
+			'message' => $e->getMessage()
+		]);
+	}
+
+
+
+
+}
+
+/**
+ * @param WP_REST_Request $kupay_request
+ */
+function kupay_order_checkout(WP_REST_Request $kupay_request): void {
 
 	try {
 
 		$kupay_request = json_decode($kupay_request->get_body(), true);
-		header("Access-Control-Allow-Origin: *");
 		checkout_order_in_woocommerce( $kupay_request );
 
 		wp_send_json($kupay_request);
@@ -83,10 +186,9 @@ function kupay_pdp_order_checkout(WP_REST_Request $kupay_request): void {
 
 		wp_send_json([
 			'code'=> 500,
-			'message' => 'There was an error while checking out the order.'
+			'message' => $e->getMessage()
 		]);
 	}
-
 
 }
 

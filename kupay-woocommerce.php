@@ -23,13 +23,16 @@ require_once('templates/cart.php');
 
 // Assets
 add_action( 'wp_enqueue_scripts', 'enqueue_kupay_js' );
+add_action( 'wp_enqueue_scripts', 'enqueue_kupay_css' );
 
 // Settings
 add_action('admin_menu', 'create_settings_menu');
 
 // Templates
 add_action( 'woocommerce_after_add_to_cart_button', 'insert_pdp_kupay_checkout', 20);
-add_action( 'woocommerce_after_cart_totals', 'insert_cart_kupay_checkout', 10 );
+add_action( 'woocommerce_proceed_to_checkout', 'insert_cart_kupay_checkout', 10 );
+add_action( 'woocommerce_before_checkout_form', 'insert_cart_kupay_checkout', 10 );
+
 
 
 
