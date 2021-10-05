@@ -1,18 +1,25 @@
-.kupayBuy{
+.kupayBuy {
     display: block !important;
+    border: 1px solid;
+    text-align: center;
+    background-color: #122143;
+    color: #FFF;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
 }
 
-.kupayBuyPdp{
+.kupayBuyPdp {
     margin-bottom: 10px !important;
-    margin-top: 20px !important;
+    margin-top: 30px !important;
 }
 
-.kupayBuyCart{
+.kupayBuyCart {
     margin-bottom: 10px !important;
     margin-top: 10px !important;
 }
 
-.kupayBuyCheckout{
+.kupayBuyCheckout {
     margin-bottom: 10px !important;
     margin-top: 10px !important;
 }

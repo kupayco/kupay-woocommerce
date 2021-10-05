@@ -1,5 +1,25 @@
 <?php
 
 function insert_checkout_kupay_checkout(){
-	echo '<br><a rel="no-follow" id="kupay-buy" class="kupayBuy kupayBuyCheckout" kupay-data-origin="CHECKOUT"></a>';
+
+	$kupayUrl = KUPAY_IFRAME_URL;
+	
+	$appId = get_option("kupay_options_app_id");
+	$requiresProcessing = true;
+	$origin = "CHECKOUT";
+	$currency = get_option("kupay_options_currency");
+	$deliveryCost = 0;
+	$cartID = "12345";
+
+	echo '<input type="hidden" id="kupay-url" name="kupay-url" value="' . $kupayUrl . '">';
+	echo '<input type="hidden" id="kupay-app-id" name="kupay-app-id" value="' . $appId . '">';
+	echo '<input type="hidden" id="kupay-requires-processing" name="kupay-requires-processing" value="' . $requiresProcessing . '">';
+	echo '<input type="hidden" id="kupay-origin" name="kupay-origin" value="' . $origin . '">';
+	echo '<input type="hidden" id="kupay-currency" name="kupay-currency" value="' . $currency . '">';
+	echo '<input type="hidden" id="kupay-delivery-cost" name="kupay-delivery-cost" value="' . $deliveryCost . '">';
+	echo '<input type="hidden" id="kupay-cart-id" name="kupay-cart-id" value="' . $cartID . '">';
+	
+
+	echo '<br>';
+	echo '<kupay class="kupayBuy kupayBuyPdp" onclick="kupayCartCheckout()">COMPRAR EN 1-CLICK</kupay>';
 }
