@@ -35,8 +35,16 @@ add_action( 'woocommerce_proceed_to_checkout', 'insert_cart_kupay_checkout', 10 
 add_action( 'woocommerce_before_checkout_form', 'insert_cart_kupay_checkout', 10 );
 add_action('woocommerce_add_to_cart', 'identify_kupay_cart');
 
+$kupay_iframe_url = "https://checkout.kupay.co/#/order-received";
 
-define("KUPAY_IFRAME_URL", "https://checkout.kupay.co/#/order-received");
+if(get_option( 'kupay_options_test_mode' )){
+
+    $kupay_iframe_url = "http://localhost:3001/#/order-received";
+
+}
+
+define("KUPAY_IFRAME_URL", $kupay_iframe_url);
+
 
 
 

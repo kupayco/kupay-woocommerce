@@ -11,13 +11,13 @@ function kupay_prepare_pdp_order_data(){
 
 function kupayBuildIframe(iframeUrl){
 
-    const w = 700;
+    const w = 450;
     const h = 1000;
     var left = (screen.width/2)-(w/2);
     var top = (screen.height/2)-(h/2);
 
     
-    window.open(iframeUrl, "Kupay", 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
+    window.open(iframeUrl, "Kupay", '_self, toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
 
 }
 
