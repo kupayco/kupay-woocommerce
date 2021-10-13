@@ -13,7 +13,7 @@ function build_pdp_order_data($kupay_request): array {
 
 	$product_detail = wc_get_product($kupay_request['product']['id']);
 	WC()->cart->add_to_cart( $kupay_request['product']['id'], $kupay_request['product']['quantity']);
-	kupay_calculate_cart_shipping( $kupay_request['customer']['shipping_data'] );
+	kupay_calculate_cart_shipping( $kupay_request['customer']['shippingData'] );
 	$image_id  = $product_detail->get_image_id();
 	$image_url = wp_get_attachment_image_url( $image_id, 'full' );
 
@@ -23,6 +23,7 @@ function build_pdp_order_data($kupay_request): array {
 		'state' => 'ORDER_CREATED',
 		'user' => $kupay_request['customer']['email'],
 		'deliveryData' => [
+			'shippingMethod' => '',
 			'cost' => (float) WC()->cart->get_shipping_total()
 		],
 		'productData' => [
@@ -83,6 +84,9 @@ function build_cart_order_data($kupay_request): array {
 		if($kupay_request['origin'] == "CART" || $kupay_request['PDP']){
 			WC()->cart->add_to_cart($value['product_id'], $value['quantity']);
 		}
+
+		WC()->cart->calculate_fees();
+		WC()->cart->calculate_totals();
 		
 	}
 
@@ -122,7 +126,10 @@ function kupay_calculate_cart_shipping( $shipping_data ): void {
 	WC()->customer->set_props($data);
 	WC()->customer->save();
 	WC()->cart->calculate_shipping();
+	
+	WC()->cart->calculate_fees();
 	WC()->cart->calculate_totals();
+
 }
 
 /**
@@ -143,6 +150,8 @@ function kupay_order_create(WP_REST_Request $kupay_request): WP_REST_Response {
 				if($kupay_request['origin'] == "CART" || $kupay_request['origin'] == "CHECKOUT"){
 
 					$data = build_cart_order_data($kupay_request);
+					$data['remoteHost'] = $_SERVER['REMOTE_HOST'];
+
 					$wp_rest_response->set_data($data);
 
 					return new WP_REST_Response($data, 200, );
@@ -166,7 +175,6 @@ function kupay_order_create(WP_REST_Request $kupay_request): WP_REST_Response {
 function kupay_order_checkout(WP_REST_Request $kupay_request): void {
 
 	try {
-
 		$kupay_request = json_decode($kupay_request->get_body(), true);
 		checkout_order_in_woocommerce( $kupay_request );
 		wp_send_json($kupay_request);
@@ -187,28 +195,31 @@ function checkout_order_in_woocommerce($kupay_request) {
 
 
 	$shipping_address = array(
-		'first_name' => $kupay_request['userData']['firstName'],
-		'last_name'  => $kupay_request['userData']['lastName'],
-		'email'      => $kupay_request['userData']['email'],
-		'address_1'  => $kupay_request['userData']['shippingAddress']['address'],
-		'address_2'  => $kupay_request['userData']['shippingAddress']['address'],
-		'city'       => $kupay_request['userData']['shippingAddress']['city'],
-		'state'      => $kupay_request['userData']['shippingAddress']['zipCode'],
-		'postcode'   => $kupay_request['userData']['shippingAddress']['state'],
-		'country'    => $kupay_request['userData']['shippingAddress']['country']
+		'first_name' => $kupay_request['customer']['firstName'],
+		'last_name'  => $kupay_request['customer']['lastName'],
+		'email'      => $kupay_request['customer']['email'],
+		'address_1'  => $kupay_request['customer']['shippingData']['address'],
+		'address_2'  => $kupay_request['customer']['shippingData']['addressDescription'],
+		'city'       => $kupay_request['customer']['shippingData']['city'],
+		'state'      => $kupay_request['customer']['shippingData']['zipCode'],
+		'postcode'   => $kupay_request['customer']['shippingData']['state'],
+		'country'    => $kupay_request['customer']['shippingData']['country']
 	);
 
 	$billing_address = array(
-		'first_name' => $kupay_request['userData']['firstName'],
-		'last_name'  => $kupay_request['userData']['lastName'],
-		'email'      => $kupay_request['userData']['email'],
-		'address_1'  => $kupay_request['userData']['billingAddress']['address'],
-		'address_2'  => $kupay_request['userData']['billingAddress']['address'],
-		'city'       => $kupay_request['userData']['billingAddress']['city'],
-		'state'      => $kupay_request['userData']['billingAddress']['zipCode'],
-		'postcode'   => $kupay_request['userData']['billingAddress']['state'],
-		'country'    => $kupay_request['userData']['billingAddress']['country']
+		'first_name' => $kupay_request['customer']['firstName'],
+		'last_name'  => $kupay_request['customer']['lastName'],
+		'email'      => $kupay_request['customer']['email'],
+		'address_1'  => $kupay_request['customer']['billinData']['address'],
+		'address_2'  => $kupay_request['customer']['billinData']['addressDescription'],
+		'city'       => $kupay_request['customer']['billinData']['city'],
+		'state'      => $kupay_request['customer']['billinData']['zipCode'],
+		'postcode'   => $kupay_request['customer']['billinData']['state'],
+		'country'    => $kupay_request['customer']['billinData']['country']
 	);
+
+	WC()->shipping()->get_shipping_methods();
+
 
 	$order = wc_create_order();
 
@@ -218,8 +229,21 @@ function checkout_order_in_woocommerce($kupay_request) {
 
 	$order->set_address( $shipping_address, 'shipping' );
 	$order->set_address( $billing_address );
-	$order->set_shipping_total($kupay_request['totalsData']['shippingCost']);
+
+	$item = new WC_Order_Item_Shipping();
+	$item->set_total($kupay_request['totalsData']['shippingCost']);
+	$item->calculate_taxes($shipping_address);
+
+	$order->add_item($item);
+	$order->calculate_shipping();
+	
 	$order->set_total($kupay_request['totalsData']['total']);
+	
+	$order->calculate_taxes();
+	$order->calculate_totals();
+
+	
+
 	$order->set_status("processing");
 	$order->set_payment_method_title("Kupay - One-Click Checkout");
 	$order->save();

@@ -28,8 +28,8 @@ function kupayPDPCheckout(){
     iframeUrl += "?appId=" + document.getElementById("kupay-app-id").value;
     iframeUrl += "&productId=" + document.getElementById("kupay-product-id").value;
     iframeUrl += "&productName=" + document.getElementById("kupay-product-name").value;
-    iframeUrl += "&productQuantity=" + document.getElementById("kupay-product-quantity").value;
-    iframeUrl += "&productImageUrl=" + document.getElementById("kupay-product-image-url").value;
+    iframeUrl += "&productQuantity=" + document.getElementsByClassName("input-text qty text").quantity.valueAsNumber;
+    iframeUrl += "&productImageUrl=" + " "; // document.getElementById("kupay-product-image-url").value;
     iframeUrl += "&productPrice=" + document.getElementById("kupay-product-price").value;
     iframeUrl += "&requiresProcessing=" + document.getElementById("kupay-requires-processing").value;
     iframeUrl += "&origin=" + document.getElementById("kupay-origin").value;

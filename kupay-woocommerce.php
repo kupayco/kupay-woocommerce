@@ -1,14 +1,14 @@
 <?php
 /**
  * @package Kupay
- * @version 0.0.1
+ * @version 1.0.0
  */
 /*
-Plugin Name: Kupay WooCommerce
+Plugin Name: Kupay for WooCommerce
 Plugin URI: http://kupay.co
-Description: Kupay WooCommerce Plugin
+Description: Kupay for WooCommerce
 Author: Kupay
-Version: 0.0.1
+Version: 1.0.0
 Author URI: https://github.com/kupayco
 */
 
@@ -17,7 +17,7 @@ require_once ('vendor/autoload.php');
 require_once('includes/settings.php');
 require_once('includes/cart.php');
 require_once('includes/checkout.php');
-require_once('includes/kupay_wc_rest_api.php');
+require_once('includes/api.php');
 require_once('assets/assets.php');
 require_once('templates/pdp.php');
 require_once('templates/cart.php');

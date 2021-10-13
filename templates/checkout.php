@@ -2,6 +2,19 @@
 
 function insert_checkout_kupay_checkout(){
 
+	$session_id = null;
+	$values = null;
+  
+	foreach( $_COOKIE as $key => $value ) {
+	  	if( stripos( $key, 'wp_woocommerce_session_' ) === false ) {
+			continue;
+	  	}
+	  	$values = explode( '||', $value );
+	}
+  
+	$session_id = $values[0];
+
+
 	$kupayUrl = KUPAY_IFRAME_URL;
 	
 	$appId = get_option("kupay_options_app_id");
@@ -9,7 +22,7 @@ function insert_checkout_kupay_checkout(){
 	$origin = "CHECKOUT";
 	$currency = get_option("kupay_options_currency");
 	$deliveryCost = 0;
-	$cartID = "12345";
+	$cartID = $session_id;
 
 	echo '<input type="hidden" id="kupay-url" name="kupay-url" value="' . $kupayUrl . '">';
 	echo '<input type="hidden" id="kupay-app-id" name="kupay-app-id" value="' . $appId . '">';
@@ -21,5 +34,5 @@ function insert_checkout_kupay_checkout(){
 	
 
 	echo '<br>';
-	echo '<kupay class="kupayBuy kupayBuyPdp" onclick="kupayCartCheckout()">COMPRAR EN 1-CLICK</kupay>';
+	echo '<kupay class="kupayBuy kupayBuyCheckout" onclick="kupayCartCheckout()">COMPRAR EN 1-CLICK</kupay>';
 }

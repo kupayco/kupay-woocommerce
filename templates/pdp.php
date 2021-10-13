@@ -13,7 +13,7 @@ function insert_pdp_kupay_checkout(){
 	$appId = get_option("kupay_options_app_id");
     $productId = $product->get_id();
 	$productName = $product->get_name();
-	$productQuantity = 1;
+
 	$productImageUrl = wp_get_attachment_image_url( $product->get_image_id(), 'full' );
 	$productPrice = $product->get_price();
 	$requiresProcessing = true;
@@ -25,7 +25,6 @@ function insert_pdp_kupay_checkout(){
 	echo '<input type="hidden" id="kupay-app-id" name="kupay-app-id" value="' . $appId . '">';
 	echo '<input type="hidden" id="kupay-product-id" name="kupay-product-id" value="' . $productId . '">';
 	echo '<input type="hidden" id="kupay-product-name" name="kupay-product-name" value="' . $productName . '">';
-	echo '<input type="hidden" id="kupay-product-quantity" name="kupay-product-quantity" value="' . $productQuantity . '">';
 	echo '<input type="hidden" id="kupay-product-image-url" name="kupay-product-image-url" value="' . $productImageUrl . '">';
 	echo '<input type="hidden" id="kupay-product-price" name="kupay-product-price" value="' . $productPrice . '">';
 	echo '<input type="hidden" id="kupay-requires-processing" name="kupay-requires-processing" value="' . $requiresProcessing . '">';
