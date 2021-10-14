@@ -33,6 +33,6 @@ function insert_pdp_kupay_checkout(){
 	echo '<input type="hidden" id="kupay-delivery-cost" name="kupay-delivery-cost" value="' . $deliveryCost . '">';
 	
 	echo '<br>';
-	echo '<kupay class="kupayBuy kupayBuyPdp" onclick="kupayPDPCheckout()">COMPRAR EN 1-CLICK<img></kupay>';
+	echo '<kupay class="kupayBuy kupayBuyPdp" onclick="kupayPDPCheckout()"><img> COMPRAR EN 1-CLICK</kupay>';
 
 }

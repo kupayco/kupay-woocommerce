@@ -34,5 +34,5 @@ function insert_checkout_kupay_checkout(){
 	
 
 	echo '<br>';
-	echo '<kupay class="kupayBuy kupayBuyCheckout" onclick="kupayCartCheckout()">COMPRAR EN 1-CLICK</kupay>';
+	echo '<kupay class="kupayBuy kupayBuyCheckout" onclick="kupayCartCheckout()"><img> COMPRAR EN 1-CLICK</kupay>';
 }
