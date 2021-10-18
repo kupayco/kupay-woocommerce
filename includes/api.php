@@ -29,12 +29,8 @@ function register_kupay_checkout_route()
 }
 
 function is_request_authorized(WP_REST_Request $kupay_request){
-	return $kupay_request->get_header("authorization") == STORE_API_KEY;
+	return $kupay_request->get_header("authorization") == get_option('kupay_options_app_id');
 }
-
-// function is_domain_authorized(WP_REST_Request $kupay_request){
-// 	return $_SERVER['REMOTE_HOST'] == KUPAY_API_FULL_DOMAIN;
-// }
 
 add_action('rest_api_init', 'register_kupay_order_create_route');
 add_action('rest_api_init', 'register_kupay_checkout_route');

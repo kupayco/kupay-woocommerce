@@ -15,9 +15,8 @@ function kupayBuildIframe(iframeUrl){
     const h = 1000;
     var left = (screen.width/2)-(w/2);
     var top = (screen.height/2)-(h/2);
-
     
-    window.open(iframeUrl, "Kupay", '_self, toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
+    window.open(iframeUrl, "Kupay Checkout", '_self, toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
 
 }
 
@@ -35,7 +34,6 @@ function kupayPDPCheckout(){
     iframeUrl += "&origin=" + document.getElementById("kupay-origin").value;
     iframeUrl += "&currency=" + document.getElementById("kupay-currency").value;
     iframeUrl += "&deliveryCost=" + document.getElementById("kupay-delivery-cost").value;
-    iframeUrl += "&cartId=" + "cartid001";
 
     kupayBuildIframe(iframeUrl);
 

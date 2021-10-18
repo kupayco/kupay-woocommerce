@@ -94,7 +94,6 @@ function build_cart_order_data($kupay_request): array {
 
 	return
 		[
-			'remoteHost' => $_SERVER['SERVER_NAME'],
 			'origin' => $kupay_request['origin'],
 			'state' => 'ORDER_CREATED',
 			'user' => $kupay_request['customer']['email'],
@@ -172,12 +171,15 @@ function kupay_order_create(WP_REST_Request $kupay_request): WP_REST_Response {
 /**
  * @param WP_REST_Request $kupay_request
  */
-function kupay_order_checkout(WP_REST_Request $kupay_request): void {
+function kupay_order_checkout(WP_REST_Request $kupay_request) {
 
 	try {
 
 		$kupay_request = json_decode($kupay_request->get_body(), true);
-		checkout_order_in_woocommerce( $kupay_request );
+		$order = checkout_order_in_woocommerce( $kupay_request );
+
+		$kupay_request['storeOrderId'] = $order->get_id();
+
 		wp_send_json($kupay_request);
 
 	} catch ( Exception $e ) {
@@ -194,7 +196,7 @@ function kupay_order_checkout(WP_REST_Request $kupay_request): void {
 /**
  * @throws Exception
  */
-function checkout_order_in_woocommerce($kupay_request) {
+function checkout_order_in_woocommerce($kupay_request){
 
 	$order = wc_create_order();
 
@@ -226,6 +228,8 @@ function checkout_order_in_woocommerce($kupay_request) {
 	$order->set_status("processing");
 	$order->set_payment_method_title("Kupay - One-Click Checkout");
 	$order->save();
+
+	return $order;
 
 }
 
