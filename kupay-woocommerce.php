@@ -1,19 +1,18 @@
 <?php
 /**
  * @package Kupay
- * @version 1.0.0
+ * @version 1.0
  */
 /*
 Plugin Name: Kupay for WooCommerce
 Plugin URI: http://kupay.co
 Description: Kupay for WooCommerce
 Author: Kupay
-Version: 1.0.0
+Version: 1.0
 Author URI: https://github.com/kupayco
 */
 
 // Requires
-require_once ('vendor/autoload.php');
 require_once('includes/settings.php');
 require_once('includes/checkout.php');
 require_once('includes/api.php');
