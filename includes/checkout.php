@@ -52,8 +52,10 @@ function kupay_build_pdp_order_data($kupay_request): array {
  */
 function kupay_build_cart_order_data($kupay_request): array {
 
+
 	$session = new WC_Session_Handler();
 	$session_data = $session->get_session($kupay_request['cartId']);
+
 	$cart_data = unserialize( $session_data['cart'] );
 
 	if ( is_null( $cart_data ) ) {
@@ -81,7 +83,7 @@ function kupay_build_cart_order_data($kupay_request): array {
 			'quantity' => $value['quantity'],
 		];
 
-		if($kupay_request['origin'] == "CART" || $kupay_request['CHECKOUT']){
+		if($kupay_request['origin'] == "CART" || $kupay_request['origin']['CHECKOUT']){
 			WC()->cart->add_to_cart($value['product_id'], $value['quantity']);
 		}
 
