@@ -21,13 +21,13 @@ function kupay_render_checkout(){
 	$deliveryCost = 0;
 	$cartID = $session_id;
 
-	echo '<input type="hidden" id="kupay-url" name="kupay-url" value="' . $kupayUrl . '">';
-	echo '<input type="hidden" id="kupay-app-id" name="kupay-app-id" value="' . $appId . '">';
-	echo '<input type="hidden" id="kupay-requires-processing" name="kupay-requires-processing" value="' . $requiresProcessing . '">';
-	echo '<input type="hidden" id="kupay-origin" name="kupay-origin" value="' . $origin . '">';
-	echo '<input type="hidden" id="kupay-currency" name="kupay-currency" value="' . $currency . '">';
-	echo '<input type="hidden" id="kupay-delivery-cost" name="kupay-delivery-cost" value="' . $deliveryCost . '">';
-	echo '<input type="hidden" id="kupay-cart-id" name="kupay-cart-id" value="' . $cartID . '">';
+	echo '<input type="hidden" id="kupay-url" name="kupay-url" value="' . esc_url($kupayUrl) . '">';
+	echo '<input type="hidden" id="kupay-app-id" name="kupay-app-id" value="' . esc_attr($appId) . '">';
+	echo '<input type="hidden" id="kupay-requires-processing" name="kupay-requires-processing" value="' . esc_attr($requiresProcessing) . '">';
+	echo '<input type="hidden" id="kupay-origin" name="kupay-origin" value="' . esc_attr($origin) . '">';
+	echo '<input type="hidden" id="kupay-currency" name="kupay-currency" value="' . esc_attr($currency) . '">';
+	echo '<input type="hidden" id="kupay-delivery-cost" name="kupay-delivery-cost" value="' . esc_attr($deliveryCost) . '">';
+	echo '<input type="hidden" id="kupay-cart-id" name="kupay-cart-id" value="' . esc_attr($cartID) . '">';
 	
 	echo '<kupay class="kupay-buy kupay-buy-checkout" onclick="kupayCartCheckout()">COMPRAR EN 1-CLICK</kupay>';
 

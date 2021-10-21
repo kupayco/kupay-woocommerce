@@ -6,7 +6,7 @@
  * @return array
  * @throws Exception
  */
-function build_pdp_order_data($kupay_request): array {
+function kupay_build_pdp_order_data($kupay_request): array {
 	if ( is_null( WC()->cart ) ) {
 		wc_load_cart();
 	}
@@ -50,10 +50,10 @@ function build_pdp_order_data($kupay_request): array {
  *
  * @return array
  */
-function build_cart_order_data($kupay_request): array {
+function kupay_build_cart_order_data($kupay_request): array {
 
 	$session = new WC_Session_Handler();
-	$session_data = $session->get_session($kupay_request['cartid']);
+	$session_data = $session->get_session($kupay_request['cartId']);
 	$cart_data = unserialize( $session_data['cart'] );
 
 	if ( is_null( $cart_data ) ) {
@@ -81,7 +81,7 @@ function build_cart_order_data($kupay_request): array {
 			'quantity' => $value['quantity'],
 		];
 
-		if($kupay_request['origin'] == "CART" || $kupay_request['PDP']){
+		if($kupay_request['origin'] == "CART" || $kupay_request['CHECKOUT']){
 			WC()->cart->add_to_cart($value['product_id'], $value['quantity']);
 		}
 
@@ -149,14 +149,14 @@ function kupay_order_create(WP_REST_Request $kupay_request): WP_REST_Response {
 			if(!empty($kupay_request['origin'])){
 				if($kupay_request['origin'] == "CART" || $kupay_request['origin'] == "CHECKOUT"){
 
-					$data = build_cart_order_data($kupay_request);
+					$data = kupay_build_cart_order_data($kupay_request);
 
 					$wp_rest_response->set_data($data);
 
 					return new WP_REST_Response($data, 200, );
 				}
 			}
-			return new WP_REST_Response(build_pdp_order_data($kupay_request));
+			return new WP_REST_Response(kupay_build_pdp_order_data($kupay_request));
 		}
 
 	} catch ( Exception $e ) {
@@ -176,7 +176,7 @@ function kupay_order_checkout(WP_REST_Request $kupay_request) {
 	try {
 
 		$kupay_request = json_decode($kupay_request->get_body(), true);
-		$order = checkout_order_in_woocommerce( $kupay_request );
+		$order = kupay_checkout_order_in_woocommerce( $kupay_request );
 
 		$kupay_request['storeOrderId'] = $order->get_id();
 
@@ -196,20 +196,20 @@ function kupay_order_checkout(WP_REST_Request $kupay_request) {
 /**
  * @throws Exception
  */
-function checkout_order_in_woocommerce($kupay_request){
+function kupay_checkout_order_in_woocommerce($kupay_request){
 
 	$order = wc_create_order();
 
 	$order->add_meta_data("kupay_order_id", $kupay_request['orderId']);
 
-	$order->set_customer_id(create_customer($kupay_request));
+	$order->set_customer_id(kupay_create_customer($kupay_request));
 
 	foreach ($kupay_request['productData'] as $product_data){
 		$order->add_product( wc_get_product($product_data['id']), $product_data['quantity']);
 	}
 
-	$shipping_address = create_shipping_address($kupay_request);
-	$billing_address = create_billing_address($kupay_request);
+	$shipping_address = kupay_create_shipping_address($kupay_request);
+	$billing_address = kupay_create_billing_address($kupay_request);
 
 	$order->set_address( $shipping_address, 'shipping' );
 	$order->set_address( $billing_address);
@@ -233,11 +233,11 @@ function checkout_order_in_woocommerce($kupay_request){
 
 }
 
-function create_customer($kupay_request){
+function kupay_create_customer($kupay_request){
 	return wc_create_new_customer( $kupay_request['customer']['email'], $kupay_request['customer']['email']);
 }
 
-function create_shipping_address($kupay_request){
+function kupay_create_shipping_address($kupay_request){
 	return array(
 		'first_name' => $kupay_request['customer']['firstName'],
 		'last_name'  => $kupay_request['customer']['lastName'],
@@ -252,7 +252,7 @@ function create_shipping_address($kupay_request){
 	);
 }
 
-function create_billing_address($kupay_request){
+function kupay_create_billing_address($kupay_request){
 	return array(
 		'first_name' => $kupay_request['customer']['firstName'],
 		'last_name'  => $kupay_request['customer']['lastName'],

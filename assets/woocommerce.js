@@ -43,4 +43,4 @@ function kupayCartCheckout(){
 
 }
 
-document.getElementsByClassName("kupayBuy")[0].innerHTML = "COMPRAR EN 1-CLICK";
+document.getElementsByClassName("kupay-buy")[0].innerHTML = "COMPRAR EN 1-CLICK";
