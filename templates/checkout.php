@@ -1,8 +1,6 @@
 <?php
 
-function insert_checkout_kupay_checkout(){
-
-	$session_id = null;
+function kupay_render_checkout(){
 	$values = null;
   
 	foreach( $_COOKIE as $key => $value ) {
@@ -13,10 +11,9 @@ function insert_checkout_kupay_checkout(){
 	}
   
 	$session_id = $values[0];
-
-
-	$kupayUrl = KUPAY_IFRAME_URL;
 	
+	$kupayUrl = KUPAY_IFRAME_URL;
+
 	$appId = get_option("kupay_options_app_id");
 	$requiresProcessing = true;
 	$origin = "CHECKOUT";
@@ -32,7 +29,6 @@ function insert_checkout_kupay_checkout(){
 	echo '<input type="hidden" id="kupay-delivery-cost" name="kupay-delivery-cost" value="' . $deliveryCost . '">';
 	echo '<input type="hidden" id="kupay-cart-id" name="kupay-cart-id" value="' . $cartID . '">';
 	
+	echo '<kupay class="kupay-buy kupay-buy-checkout" onclick="kupayCartCheckout()">COMPRAR EN 1-CLICK</kupay>';
 
-	echo '<br>';
-	echo '<kupay class="kupayBuy kupayBuyCheckout" onclick="kupayCartCheckout()"><img> COMPRAR EN 1-CLICK</kupay>';
 }

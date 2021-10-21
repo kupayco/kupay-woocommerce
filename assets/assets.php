@@ -1,9 +1,9 @@
 <?php
 
 function enqueue_kupay_js(){
-	wp_enqueue_script( 'kupay',  plugins_url() . '/kupay-woocommerce/assets/kupay.js' , [], false, true );
+	wp_enqueue_script( 'kupay',  KUPAY_STATIC_URL . '/woocommerce.js' , [], false, true );
 }
 
 function enqueue_kupay_css(){
-	wp_enqueue_style ('style', plugins_url() . '/kupay-woocommerce/assets/kupay.css');
+	wp_enqueue_style ('style', KUPAY_STATIC_URL . '/woocommerce.css');
 }

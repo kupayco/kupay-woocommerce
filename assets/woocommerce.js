@@ -1,14 +1,3 @@
-function kupay_prepare_pdp_order_data(){
-    let product = {
-        id: document.getElementsByName("add-to-cart")[0].value.toString(),
-        image_url: document.getElementsByClassName("woocommerce-product-gallery__image")[0].attributes["data-thumb"].value.toString(),
-        quantity: document.getElementsByClassName("input-text qty text")[0].valueAsNumber
-    }
-
-    document.getElementById("kupay-buy").setAttribute("kupay-data-product", JSON.stringify(product));
-}
-
-
 function kupayBuildIframe(iframeUrl){
 
     const w = 450;
@@ -28,7 +17,7 @@ function kupayPDPCheckout(){
     iframeUrl += "&productId=" + document.getElementById("kupay-product-id").value;
     iframeUrl += "&productName=" + document.getElementById("kupay-product-name").value;
     iframeUrl += "&productQuantity=" + document.getElementsByClassName("input-text qty text").quantity.valueAsNumber;
-    iframeUrl += "&productImageUrl=" + " "; // document.getElementById("kupay-product-image-url").value;
+    iframeUrl += "&productImageUrl=" + "";
     iframeUrl += "&productPrice=" + document.getElementById("kupay-product-price").value;
     iframeUrl += "&requiresProcessing=" + document.getElementById("kupay-requires-processing").value;
     iframeUrl += "&origin=" + document.getElementById("kupay-origin").value;
@@ -53,3 +42,5 @@ function kupayCartCheckout(){
     kupayBuildIframe(iframeUrl);
 
 }
+
+document.getElementsByClassName("kupayBuy")[0].innerHTML = "COMPRAR EN 1-CLICK";

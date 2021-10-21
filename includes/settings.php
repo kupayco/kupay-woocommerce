@@ -36,34 +36,8 @@ function create_settings_page(){
 
             <br>
             <br>
-<!-- 
-            <label for="kupay_options_enable_for_single_product"><b>ENABLE FOR SINGLE PRODUCT (Enter product ID)</b></label><br>
-            <input type="text" id="kupay_options_enable_for_single_product" name="kupay_options_enable_for_single_product"> <?php echo get_option('kupay_options_enable_for_single_product'); ?> </input>
 
-            <br>
-            <br>
-
-            <label for="kupay_options_custom_css_pdp"><b>Custom CSS for Product Detail Page</b></label><br>
-            <textarea  rows="4" cols="50" id="kupay_options_custom_css_pdp" name="kupay_options_custom_css_pdp"> <?php echo get_option('kupay_options_custom_css_pdp'); ?> </textarea>
-
-            <br>
-            <br>
-
-            <label for="kupay_options_custom_css_cart"><b>Custom CSS for Cart Page</b></label><br>
-            <textarea  rows="4" cols="50" id="kupay_options_custom_css_cart" name="kupay_options_custom_css_cart"> <?php echo get_option('kupay_options_custom_css_cart'); ?> </textarea>
-
-            <br>
-            <br>
-
-            <label for="kupay_options_custom_css_checkout"><b>Custom CSS for Checkout Page</b></label><br>
-            <textarea  rows="4" cols="50" id="kupay_options_custom_css_checkout" name="kupay_options_custom_css_checkout"> <?php echo get_option('kupay_options_custom_css_checkout'); ?> </textarea>
-
-			<br>
-			<br> -->
-
-            <br>
-
-			<?php  
+			<?php 
 
 				$options = get_option( 'kupay_options_test_mode' );
 

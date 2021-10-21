@@ -1,6 +1,6 @@
 <?php
 
-function insert_cart_kupay_checkout(){
+function kupay_render_cart(){
 	$values = null;
   
 	foreach( $_COOKIE as $key => $value ) {
@@ -29,7 +29,6 @@ function insert_cart_kupay_checkout(){
 	echo '<input type="hidden" id="kupay-delivery-cost" name="kupay-delivery-cost" value="' . $deliveryCost . '">';
 	echo '<input type="hidden" id="kupay-cart-id" name="kupay-cart-id" value="' . $cartID . '">';
 	
-	echo '<br>';
-	echo '<kupay class="kupayBuy kupayBuyCart" onclick="kupayCartCheckout()"><img> COMPRAR EN 1-CLICK</kupay>';
+	echo '<kupay class="kupay-buy kupay-buy-cart" onclick="kupayCartCheckout()">COMPRAR EN 1-CLICK</kupay>';
 
 }

@@ -1,11 +1,8 @@
 <?php
 
 
-function insert_pdp_kupay_checkout(){
+function kupay_render_pdp(){
 	
-
-	// echo '<br><button id="kupay-checkout" onclick="kupay_checkout()">Buy in One Click</button>';
-
 	global $product;
 
 	$kupayUrl = KUPAY_IFRAME_URL;
@@ -32,7 +29,6 @@ function insert_pdp_kupay_checkout(){
 	echo '<input type="hidden" id="kupay-currency" name="kupay-currency" value="' . $currency . '">';
 	echo '<input type="hidden" id="kupay-delivery-cost" name="kupay-delivery-cost" value="' . $deliveryCost . '">';
 	
-	echo '<br>';
-	echo '<kupay class="kupayBuy kupayBuyPdp" onclick="kupayPDPCheckout()"><img> COMPRAR EN 1-CLICK</kupay>';
+	echo '<kupay class="kupayBuy kupayBuyPdp" onclick="kupayPDPCheckout()">COMPRAR EN 1-CLICK</kupay>';
 
 }
