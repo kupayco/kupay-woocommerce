@@ -7,13 +7,23 @@
  * @throws Exception
  */
 function kupay_build_pdp_order_data($kupay_request): array {
+
 	if ( is_null( WC()->cart ) ) {
 		wc_load_cart();
 	}
 
 	$product_detail = wc_get_product($kupay_request['product']['id']);
-	WC()->cart->add_to_cart( $kupay_request['product']['id'], $kupay_request['product']['quantity']);
+
+    $product_variant_detail = null;
+    if(!empty($kupay_request['product']['variantId'])){
+        $product_variant_detail = new WC_Product_Variation( $kupay_request['product']['variantId']);
+    }
+
+
+	WC()->cart->add_to_cart( $kupay_request['product']['id'], $kupay_request['product']['quantity'], $kupay_request['product']['variantId']);
+
 	kupay_calculate_cart_shipping( $kupay_request['customer']['shippingData'] );
+
 	$image_id  = $product_detail->get_image_id();
 	$image_url = wp_get_attachment_image_url( $image_id, 'full' );
 
@@ -32,8 +42,10 @@ function kupay_build_pdp_order_data($kupay_request): array {
 				'id' => (string) $product_detail->get_id(),
 				'imageUrl' => $image_url,
 				'name' => $product_detail->get_name(),
-				'price' => (float) $product_detail->get_price(),
+				'price' => $product_variant_detail != null ? (float) $product_variant_detail->get_price() : (float) $product_detail->get_price(),
 				'quantity' => $kupay_request['product']['quantity'],
+                'variantId' => $product_variant_detail != null ? $product_variant_detail->get_id() : '',
+                'variantDescription' => $product_variant_detail != null ? $product_variant_detail->get_description() : ''
 			]
 		],
 		'totalsData' => [
@@ -70,6 +82,11 @@ function kupay_build_cart_order_data($kupay_request): array {
 
 	foreach ($cart_data as $key => $value){
 		$product_detail = wc_get_product( $value['product_id']);
+
+		$product_variant_detail = null;
+        if($value['variation_id'] != 0){
+            $product_variant_detail = new WC_Product_Variation($value['variation_id']);
+        }
 	
 		$image_id  = $product_detail->get_image_id();
 		$image_url = wp_get_attachment_image_url( $image_id, 'full' );
@@ -79,12 +96,14 @@ function kupay_build_cart_order_data($kupay_request): array {
 			'id' => (string) $product_detail->get_id(),
 			'imageUrl' => $image_url,
 			'name' => $product_detail->get_name(),
-			'price' => (float) $product_detail->get_price(),
+			'price' => $product_variant_detail != null ? (float) $product_variant_detail->get_price() : (float) $product_detail->get_price(),
 			'quantity' => $value['quantity'],
+            'variantId' => $product_variant_detail != null ? $product_variant_detail->get_id() : '',
+            'variantDescription' => $product_variant_detail != null ? $product_variant_detail->get_description() : ''
 		];
 
 		if($kupay_request['origin'] == "CART" || $kupay_request['origin']['CHECKOUT']){
-			WC()->cart->add_to_cart($value['product_id'], $value['quantity']);
+			WC()->cart->add_to_cart($value['product_id'], $value['quantity'], $value['variation_id']);
 		}
 
 		WC()->cart->calculate_fees();
@@ -139,7 +158,7 @@ function kupay_calculate_cart_shipping( $shipping_data ): void {
  *
  * @throws Exception
  */
-function kupay_order_create(WP_REST_Request $kupay_request): WP_REST_Response {
+function kupay_order_create(WP_REST_Request $kupay_request) {
 
 	try{
 		$wp_rest_response = new WP_REST_Response();
@@ -148,11 +167,12 @@ function kupay_order_create(WP_REST_Request $kupay_request): WP_REST_Response {
 		$kupay_request = json_decode($kupay_request->get_body(), true);
 
 		if(!empty($kupay_request)){
+
 			if(!empty($kupay_request['origin'])){
+
 				if($kupay_request['origin'] == "CART" || $kupay_request['origin'] == "CHECKOUT"){
 
 					$data = kupay_build_cart_order_data($kupay_request);
-
 					$wp_rest_response->set_data($data);
 
 					return new WP_REST_Response($data, 200, );
@@ -203,11 +223,31 @@ function kupay_checkout_order_in_woocommerce($kupay_request){
 	$order = wc_create_order();
 
 	$order->add_meta_data("kupay_order_id", $kupay_request['orderId']);
-
 	$order->set_customer_id(kupay_create_customer($kupay_request));
 
 	foreach ($kupay_request['productData'] as $product_data){
-		$order->add_product( wc_get_product($product_data['id']), $product_data['quantity']);
+
+
+        if(!empty($product_data['variantId'])){
+
+            $args = array();
+            $product_variation = new WC_Product_Variation($product_data['variantId']);
+
+            foreach($product_variation->get_variation_attributes() as $attribute=>$attribute_value){
+                $args['variation'][$attribute] = $attribute_value;
+                $args['variation_id'] = $product_data['variantId'];
+            }
+
+            $order->add_product( $product_variation, $product_data['quantity'], $args);
+        }
+        else{
+
+            $order->add_product( wc_get_product($product_data['id']), $product_data['quantity']);
+
+        }
+
+
+
 	}
 
 	$shipping_address = kupay_create_shipping_address($kupay_request);

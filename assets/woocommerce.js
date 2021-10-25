@@ -11,6 +11,14 @@ function kupayBuildIframe(iframeUrl){
 
 function kupayPDPCheckout(){
 
+
+    let variantId = ''
+
+    if(document.getElementsByClassName("variation_id").length){
+        variantId = document.getElementsByClassName("variation_id")[0].value;
+    }
+
+
     var iframeUrl = document.getElementById("kupay-url").value;
 
     iframeUrl += "?appId=" + document.getElementById("kupay-app-id").value;
@@ -23,6 +31,7 @@ function kupayPDPCheckout(){
     iframeUrl += "&origin=" + document.getElementById("kupay-origin").value;
     iframeUrl += "&currency=" + document.getElementById("kupay-currency").value;
     iframeUrl += "&deliveryCost=" + document.getElementById("kupay-delivery-cost").value;
+    iframeUrl += "&variantId=" + variantId;
 
     kupayBuildIframe(iframeUrl);
 
