@@ -11,13 +11,14 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 == Description ==
 
-Boost your shop's conversion rate by allowing your customers to buy with just one click!
+Boost your shop's conversion rate by allowing your customers to buy with just one click.
 
-Access https://kupay.co for registering your store right now.
+Access [Kupay](https://kupay.co) and register your store to get the benefits of a frictionless and headless checkout!
 
-== Minimum Requirements ==
 
-* WooCommerce 5.3.0 plugin is required
+== Requirements ==
+
+* WooCommerce 5.3.0 or higher is required.
 
 
 == Changelog ==
