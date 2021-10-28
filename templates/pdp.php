@@ -31,4 +31,6 @@ function kupay_render_pdp(){
 	
 	echo '<kupay class="kupay-buy kupay-buy-pdp" onclick="kupayPDPCheckout()">COMPRAR EN 1-CLICK</kupay>';
 
+    echo '<style>' . get_option("kupay_options_pdp_style") .  '</style>';
+
 }

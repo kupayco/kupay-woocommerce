@@ -14,6 +14,9 @@ function kupay_create_settings_menu(){
 
 	register_setting( 'kupay_options_group', 'kupay_options_app_id');
 	register_setting( 'kupay_options_group', 'kupay_options_test_mode');
+    register_setting( 'kupay_options_group', 'kupay_options_pdp_style');
+    register_setting( 'kupay_options_group', 'kupay_options_cart_style');
+    register_setting( 'kupay_options_group', 'kupay_options_checkout_style');
 
 }
 
@@ -27,7 +30,35 @@ function kupay_create_settings_page(){
             <?php settings_fields( 'kupay_options_group' ); ?>
 
             <label for="kupay_options_app_id"><b>APP ID</b></label>
+            <br>
             <input type="text" id="kupay_options_app_id" name="kupay_options_app_id" value="<?php echo esc_html(get_option('kupay_options_app_id')); ?>"/>
+
+            <br>
+            <br>
+
+            <label for="kupay_options_pdp_style"><b>Product Page Styles</b></label>
+            <br>
+            <textarea cols="50" rows="4" id="kupay_options_pdp_style" name="kupay_options_pdp_style">
+                <?php echo esc_textarea(get_option('kupay_options_pdp_style')); ?>
+            </textarea>
+
+            <br>
+            <br>
+
+            <label for="kupay_options_cart_style"><b>Cart Page Styles</b></label>
+            <br>
+            <textarea cols="50" rows="4" id="kupay_options_cart_style" name="kupay_options_cart_style">
+                <?php echo esc_textarea(get_option('kupay_options_cart_style')); ?>
+            </textarea>
+
+            <br>
+            <br>
+
+            <label for="kupay_options_checkout_style"><b>Checkout Page Styles</b></label>
+            <br>
+            <textarea cols="50" rows="4" id="kupay_options_checkout_style" name="kupay_options_checkout_style">
+                <?php echo esc_textarea(get_option('kupay_options_checkout_style')); ?>
+            </textarea>
 
             <br>
             <br>
