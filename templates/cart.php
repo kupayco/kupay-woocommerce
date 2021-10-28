@@ -31,4 +31,6 @@ function kupay_render_cart(){
 	
 	echo '<kupay class="kupay-buy kupay-buy-cart" onclick="kupayCartCheckout()">COMPRAR EN 1-CLICK</kupay>';
 
+    echo '<style>' . get_option("kupay_options_cart_style") .  '</style>';
+
 }
