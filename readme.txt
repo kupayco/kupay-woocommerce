@@ -29,4 +29,9 @@ Access [Kupay](https://kupay.co) and register your store to get the benefits of 
 
 = 1.1 =
 
-* Enables One-Click Checkout for variation productions.
+* Enable One-Click Checkout for variation productions.
+
+= 1.1.2 =
+
+* Enable css custom fields for Kupay button on PDP, Cart and Checkout.
+* Shipping cost are now being calculated according to region and flat/free rate.
