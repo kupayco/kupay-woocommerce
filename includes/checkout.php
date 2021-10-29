@@ -143,6 +143,8 @@ function kupay_calculate_cart_shipping( $shipping_data ): void {
 	if(!empty($shipping_data["city"])) $data["shipping_city"] = $shipping_data["city"];
 	if(!empty($shipping_data["address"])) $data["shipping_address_1"] = $shipping_data["address"];
 	if(!empty($shipping_data["addressDescription"])) $data["shipping_address_2"] = $shipping_data["addressDescription"];
+    if(!empty($shipping_data["provinceCode"])) $data["shipping_state"] = $shipping_data["provinceCode"];
+    if(!empty($shipping_data["countryCode"])) $data["shipping_country"] = $shipping_data["countryCode"];
 
 	WC()->customer->set_props($data);
 	WC()->customer->save();
@@ -287,9 +289,9 @@ function kupay_create_shipping_address($kupay_request){
 		'address_1'  => $kupay_request['customer']['shippingData']['address'],
 		'address_2'  => $kupay_request['customer']['shippingData']['addressDescription'],
 		'city'       => $kupay_request['customer']['shippingData']['city'],
-		'state'      => $kupay_request['customer']['shippingData']['zipCode'],
-		'postcode'   => $kupay_request['customer']['shippingData']['state'],
-		'country'    => $kupay_request['customer']['shippingData']['country'],
+		'state'      => $kupay_request['customer']['shippingData']['provinceCode'],
+		'postcode'   => $kupay_request['customer']['shippingData']['zipCode'],
+		'country'    => $kupay_request['customer']['shippingData']['countryCode'],
 		'phone'    => $kupay_request['customer']['shippingData']['phone']
 	);
 }
@@ -299,12 +301,12 @@ function kupay_create_billing_address($kupay_request){
 		'first_name' => $kupay_request['customer']['firstName'],
 		'last_name'  => $kupay_request['customer']['lastName'],
 		'email'      => $kupay_request['customer']['email'],
-		'address_1'  => $kupay_request['customer']['billinData']['address'],
-		'address_2'  => $kupay_request['customer']['billinData']['addressDescription'],
-		'city'       => $kupay_request['customer']['billinData']['city'],
-		'state'      => $kupay_request['customer']['billinData']['zipCode'],
-		'postcode'   => $kupay_request['customer']['billinData']['state'],
-		'country'    => $kupay_request['customer']['billinData']['country'],
-		'phone'    => $kupay_request['customer']['billinData']['phone']
+		'address_1'  => $kupay_request['customer']['billingData']['address'],
+		'address_2'  => $kupay_request['customer']['billingData']['addressDescription'],
+		'city'       => $kupay_request['customer']['billingData']['city'],
+		'state'      => $kupay_request['customer']['billingData']['provinceCode'],
+		'postcode'   => $kupay_request['customer']['billingData']['zipCode'],
+		'country'    => $kupay_request['customer']['billingData']['countryCode'],
+		'phone'    => $kupay_request['customer']['billingData']['phone']
 	);
 }
