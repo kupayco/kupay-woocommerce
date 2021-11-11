@@ -64,7 +64,7 @@ function kupayCartCheckout(){
 }
 
 if(document.getElementsByClassName("kupay-buy").length > 0){
-    document.getElementsByClassName("kupay-buy")[0].innerHTML = "COMPRAR EN 1-CLICK";
+    document.getElementsByClassName("kupay-buy")[0].innerHTML = "COMPRAR AHORA";
 }
 
 (function(e,t){var n=e.amplitude||{_q:[],_iq:{}};var r=t.createElement("script")
