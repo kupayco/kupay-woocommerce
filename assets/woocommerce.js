@@ -107,18 +107,60 @@ if(document.getElementsByClassName('single_add_to_cart_button').length > 0){
     }
 }
 
-document.getElementsByClassName('checkout-button')[0].onclick = function() {
-    kupayEvent("CLICK", {
-        storeId: document.getElementById("kupay-app-id").value,
-        origin: "PROCEED_CHECKOUT",
-        platform: "WOOCOMMERCE"
-    })
+if(document.getElementsByClassName('checkout-button').length > 0){
+
+    document.getElementsByClassName('checkout-button')[0].onclick = function() {
+        kupayEvent("CLICK", {
+            storeId: document.getElementById("kupay-app-id").value,
+            origin: "PROCEED_CHECKOUT",
+            platform: "WOOCOMMERCE"
+        })
+    }
+
 }
 
-document.getElementById('place_order').onclick = function() {
-    kupayEvent("CLICK", {
-        storeId: document.getElementById("kupay-app-id").value,
-        origin: "PLACE_ORDER",
-        platform: "WOOCOMMERCE"
-    })
+
+if(document.getElementById('place_order') != null){
+
+    document.getElementById('place_order').onclick = function() {
+        kupayEvent("CLICK", {
+            storeId: document.getElementById("kupay-app-id").value,
+            origin: "PLACE_ORDER",
+            platform: "WOOCOMMERCE"
+        })
+    }
+
 }
+
+
+
+if(document.getElementsByClassName('single_add_to_cart_button').length > 0){
+
+    const addToCartButton = document.getElementsByClassName("single_add_to_cart_button")[0]
+
+    const kupayBuyButton = document.getElementsByClassName("kupay-buy")[0];
+
+    const observer = new MutationObserver(function(mutations) {
+
+        mutations.forEach(function(mutation) {
+
+            if(addToCartButton.classList.contains("disabled")){
+                kupayBuyButton.classList.add("kupay-buy-disabled");
+            }else {
+                kupayBuyButton.classList.remove("kupay-buy-disabled");
+            }
+
+        });
+    });
+
+    // Start observing myElem
+    observer.observe(addToCartButton, { attributes: true });
+
+    // Testing the observer gets triggered
+    setTimeout(function() {
+        addToCartButton.disabled = false;
+    }, 3000);
+
+
+}
+
