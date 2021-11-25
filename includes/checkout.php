@@ -70,6 +70,9 @@ function kupay_build_cart_order_data($kupay_request): array {
 
 	$cart_data = unserialize( $session_data['cart'] );
 
+    $applied_coupons = unserialize($session_data['coupon_discount_totals']);
+    
+
 	if ( is_null( $cart_data ) ) {
 		throw new Exception("No cart data has been found!");
 	}
@@ -111,6 +114,18 @@ function kupay_build_cart_order_data($kupay_request): array {
 		
 	}
 
+	$coupon_data = [];
+
+    foreach($applied_coupons as $key => $value){
+
+        WC()->cart->add_discount($key);
+
+        $coupon_data[] = [
+            'code' => $key,
+            'value' => $value
+        ];
+    }
+
 	kupay_calculate_cart_shipping( $kupay_request['customer']['shipping_data']);
 
 	return
@@ -121,6 +136,7 @@ function kupay_build_cart_order_data($kupay_request): array {
 			'deliveryData' => [
 				'cost' => (float) WC()->cart->get_shipping_total(),
 			],
+            'couponData' => $coupon_data,
 			'productData' => $product_data,
 			'totalsData' => [
 				'subtotal' => (float) WC()->cart->get_subtotal(),
@@ -248,9 +264,17 @@ function kupay_checkout_order_in_woocommerce($kupay_request){
 
         }
 
-
-
 	}
+
+	foreach ($kupay_request['couponData'] as $coupon_data){
+
+        $coupon = new WC_Coupon($coupon_data['code']);
+
+        $order->apply_coupon($coupon);
+        $order->calculate_totals();
+        $order->save();
+
+    }
 
 	$shipping_address = kupay_create_shipping_address($kupay_request);
 	$billing_address = kupay_create_billing_address($kupay_request);
@@ -276,6 +300,7 @@ function kupay_checkout_order_in_woocommerce($kupay_request){
 	return $order;
 
 }
+
 
 function kupay_create_customer($kupay_request){
 	return wc_create_new_customer( $kupay_request['customer']['email'], $kupay_request['customer']['email']);
