@@ -90,6 +90,11 @@ function kupay_create_settings_page(){
 			<?php submit_button(); ?>
 
 		</form>
+		<style>
+		    input[type=checkbox] {
+		        margin-top: 3px;
+		    }
+		</style>
 	</div>
 	<?php
 }
