@@ -29,9 +29,18 @@ add_action( 'wp_enqueue_scripts', 'kupay_enqueue_kupay_css' );
 add_action('admin_menu', 'kupay_create_settings_menu');
 
 // Templates
-add_action( 'woocommerce_before_add_to_cart_button', 'kupay_render_pdp', 20);
-add_action( 'woocommerce_proceed_to_checkout', 'kupay_render_cart', 10 );
-add_action( 'woocommerce_before_checkout_form', 'kupay_render_checkout', 10 );
+if(get_option('kupay_options_pdp')) {
+    add_action( 'woocommerce_before_add_to_cart_button', 'kupay_render_pdp', 20);
+}
+
+if(get_option('kupay_options_cart')) {
+    add_action( 'woocommerce_proceed_to_checkout', 'kupay_render_cart', 10 );
+}
+
+if(get_option('kupay_options_checkout')) {
+    add_action( 'woocommerce_before_checkout_form', 'kupay_render_checkout', 10 );
+}
+
 
 // IFrame URL
 $kupay_iframe_url = "https://checkout.kupay.co/#/order-received";
