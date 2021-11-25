@@ -35,3 +35,7 @@ Access [Kupay](https://kupay.co) and register your store to get the benefits of 
 
 * Enable css custom fields for Kupay button on PDP, Cart and Checkout.
 * Shipping cost are now being calculated according to region and flat/free rate.
+
+= 1.1.3 =
+
+* Enable coupon discounts applied on the cart and checkout pages.
