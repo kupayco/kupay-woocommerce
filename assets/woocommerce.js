@@ -58,6 +58,7 @@ function kupayCartCheckout(){
     iframeUrl += "&currency=" + document.getElementById("kupay-currency").value;
     iframeUrl += "&deliveryCost=" + document.getElementById("kupay-delivery-cost").value;
     iframeUrl += "&cartId=" + document.getElementById("kupay-cart-id").value;
+    iframeUrl += "&cartTotal=" + document.getElementById("kupay-cart-total").value;
 
     kupayBuildIframe(iframeUrl);
 
