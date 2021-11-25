@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;900&display=swap');
+
+.kupay-buy {
+    display: block;
+    border: 1px solid;
+    text-align: center;
+    background-color: #122143;
+    color: #FFF;
+    padding: 8px 0;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    margin: 20px auto;
+    min-width: 200px;
+}
+
+.kupay-buy-disabled {
+    background-color: #48587c !important;
+    pointer-events: none !important;
+}
+
+/*.kupay-buy:before{*/
+/*    content: '';*/
+/*    background:url('https://www.kupay.co/favicon.ico');*/
+/*    background-size: 20px 20px;*/
+/*    position:absolute;*/
+/*    width:20px;*/
+/*    height:20px;*/
+/*    margin-top: 2px;*/
+/*    margin-left:-30px;*/
+
+/*}*/

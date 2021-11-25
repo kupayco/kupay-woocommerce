@@ -1,11 +1,8 @@
 <?php
 
 
-function insert_pdp_kupay_checkout(){
+function kupay_render_pdp(){
 	
-
-	// echo '<br><button id="kupay-checkout" onclick="kupay_checkout()">Buy in One Click</button>';
-
 	global $product;
 
 	$kupayUrl = KUPAY_IFRAME_URL;
@@ -18,21 +15,22 @@ function insert_pdp_kupay_checkout(){
 	$productPrice = $product->get_price();
 	$requiresProcessing = true;
 	$origin = "PDP";
-	$currency = get_option("kupay_options_currency");
+	$currency = "EUR";
 	$deliveryCost = 0;
 
-	echo '<input type="hidden" id="kupay-url" name="kupay-url" value="' . $kupayUrl . '">';
-	echo '<input type="hidden" id="kupay-app-id" name="kupay-app-id" value="' . $appId . '">';
-	echo '<input type="hidden" id="kupay-product-id" name="kupay-product-id" value="' . $productId . '">';
-	echo '<input type="hidden" id="kupay-product-name" name="kupay-product-name" value="' . $productName . '">';
-	echo '<input type="hidden" id="kupay-product-image-url" name="kupay-product-image-url" value="' . $productImageUrl . '">';
-	echo '<input type="hidden" id="kupay-product-price" name="kupay-product-price" value="' . $productPrice . '">';
-	echo '<input type="hidden" id="kupay-requires-processing" name="kupay-requires-processing" value="' . $requiresProcessing . '">';
-	echo '<input type="hidden" id="kupay-origin" name="kupay-origin" value="' . $origin . '">';
-	echo '<input type="hidden" id="kupay-currency" name="kupay-currency" value="' . $currency . '">';
-	echo '<input type="hidden" id="kupay-delivery-cost" name="kupay-delivery-cost" value="' . $deliveryCost . '">';
+	echo '<input type="hidden" id="kupay-url" name="kupay-url" value="' . esc_url($kupayUrl) . '">';
+	echo '<input type="hidden" id="kupay-app-id" name="kupay-app-id" value="' . esc_attr($appId) . '">';
+	echo '<input type="hidden" id="kupay-product-id" name="kupay-product-id" value="' . esc_attr($productId) . '">';
+	echo '<input type="hidden" id="kupay-product-name" name="kupay-product-name" value="' . esc_attr($productName) . '">';
+	echo '<input type="hidden" id="kupay-product-image-url" name="kupay-product-image-url" value="' . esc_attr($productImageUrl) . '">';
+	echo '<input type="hidden" id="kupay-product-price" name="kupay-product-price" value="' . esc_attr($productPrice) . '">';
+	echo '<input type="hidden" id="kupay-requires-processing" name="kupay-requires-processing" value="' . esc_attr($requiresProcessing) . '">';
+	echo '<input type="hidden" id="kupay-origin" name="kupay-origin" value="' . esc_attr($origin) . '">';
+	echo '<input type="hidden" id="kupay-currency" name="kupay-currency" value="' . esc_attr($currency) . '">';
+	echo '<input type="hidden" id="kupay-delivery-cost" name="kupay-delivery-cost" value="' . esc_attr($deliveryCost) . '">';
 	
-	echo '<br>';
-	echo '<kupay class="kupayBuy kupayBuyPdp" onclick="kupayPDPCheckout()"><img> COMPRAR EN 1-CLICK</kupay>';
+	echo '<kupay class="kupay-buy kupay-buy-pdp" onclick="kupayPDPCheckout()">COMPRAR EN 1-CLICK</kupay>';
+
+    echo '<style>' . get_option("kupay_options_pdp_style") .  '</style>';
 
 }
