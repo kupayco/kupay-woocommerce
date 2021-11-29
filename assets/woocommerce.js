@@ -1,4 +1,20 @@
+function listenCookieChange(interval = 1000) {
+    const myInterval = setInterval(()=> {
+        let cookie = document.cookie;
+        if (cookie.includes('kupay-order')) {
+            try {
+                clearInterval(myInterval);
+                document.cookie = 'kupay-order=; expires=Thu, 01-Jan-70 00:00:01 GMT; path=/'
+                window.location.href = `${window.location.origin}/checkout/order-received`;
+            } catch(e) {
+                console.log(e.message);
+            }
+        }
+    }, interval);
+}
+
 function kupayBuildIframe(iframeUrl){
+    listenCookieChange();
 
     const w = 450;
     const h = 1000;
