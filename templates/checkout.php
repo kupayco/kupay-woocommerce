@@ -20,6 +20,7 @@ function kupay_render_checkout(){
 	$currency = get_option("kupay_options_currency");
 	$deliveryCost = 0;
 	$cartID = $session_id;
+	$cartTotal = (float) WC()->cart->total;
 
 	echo '<input type="hidden" id="kupay-url" name="kupay-url" value="' . esc_url($kupayUrl) . '">';
 	echo '<input type="hidden" id="kupay-app-id" name="kupay-app-id" value="' . esc_attr($appId) . '">';
@@ -28,6 +29,7 @@ function kupay_render_checkout(){
 	echo '<input type="hidden" id="kupay-currency" name="kupay-currency" value="' . esc_attr($currency) . '">';
 	echo '<input type="hidden" id="kupay-delivery-cost" name="kupay-delivery-cost" value="' . esc_attr($deliveryCost) . '">';
 	echo '<input type="hidden" id="kupay-cart-id" name="kupay-cart-id" value="' . esc_attr($cartID) . '">';
+	echo '<input type="hidden" id="kupay-cart-total" name="kupay-cart-total" value="' . esc_attr($cartTotal) . '">';
 	
 	echo '<kupay class="kupay-buy kupay-buy-checkout" onclick="kupayCartCheckout()">COMPRAR EN 1-CLICK</kupay>';
 
