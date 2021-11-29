@@ -1,8 +1,9 @@
 function handleMessage(e) {
     // e.data hold the message from child
-    console.log(e.data);
-    window.removeEventListener('message', handleMessage);
-    window.location.href = `${window.location.origin}/checkout/order-received`;
+    if(e.data && e.data.orderConfirmed) {
+        window.removeEventListener('message', handleMessage);
+        window.location.href = `${window.location.origin}/checkout/order-received`;
+    }
 }
 
 function kupayBuildIframe(iframeUrl){
