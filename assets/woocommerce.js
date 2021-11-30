@@ -1,4 +1,13 @@
+function handleMessage(e) {
+    // e.data hold the message from child
+    if(e.data && e.data.orderConfirmed) {
+        window.removeEventListener('message', handleMessage);
+        window.location.href = `${window.location.origin}/checkout/order-received`;
+    }
+}
+
 function kupayBuildIframe(iframeUrl){
+    window.addEventListener('message', handleMessage , false);
 
     const w = 450;
     const h = 1000;
