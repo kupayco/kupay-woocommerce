@@ -4,7 +4,7 @@ Tags: checkout, 1-click-checkout, one-click-checkout, woocommerce, kupay, e-comm
 Requires at least: 5.1
 Tested up to: 5.8
 Requires PHP: 7.2
-Stable tag: 1.1.3
+Stable tag: 1.1.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -39,3 +39,16 @@ Access [Kupay](https://kupay.co) and register your store to get the benefits of 
 = 1.1.3 =
 
 * Enable coupon discounts applied on the cart and checkout pages.
+
+= 1.1.4 =
+
+* Minor bug-fixes.
+
+= 1.1.5 =
+
+* Enable option for disable button on PDP.
+
+= 1.1.6 =
+
+* Enable options for enabling/disabling button on product, cart and checkout pages.
+* Minor bug-fixes.
