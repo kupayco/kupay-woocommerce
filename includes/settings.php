@@ -17,6 +17,9 @@ function kupay_create_settings_menu(){
     register_setting( 'kupay_options_group', 'kupay_options_pdp_style');
     register_setting( 'kupay_options_group', 'kupay_options_cart_style');
     register_setting( 'kupay_options_group', 'kupay_options_checkout_style');
+	register_setting( 'kupay_options_group', 'kupay_options_pdp');
+	register_setting( 'kupay_options_group', 'kupay_options_cart');
+	register_setting( 'kupay_options_group', 'kupay_options_checkout');
 
 }
 
@@ -65,10 +68,33 @@ function kupay_create_settings_page(){
 
 			<label for="kupay_options_test_mode_checkbox"><b>Test Mode </b></label>
 			<input type="checkbox" id="kupay_options_test_mode_checkbox" name="kupay_options_test_mode[kupay_options_test_mode_checkbox]" value="1" <?php echo esc_html(checked( 1, get_option( 'kupay_options_test_mode' )['kupay_options_test_mode_checkbox'], false )) ?> '/>
-			
+
+            <br>
+            <br>
+
+			<label for="kupay_options_pdp_checkbox"><b>Enable checkout button on Product Page</b></label>
+			<input type="checkbox" id="kupay_options_pdp_checkbox" name="kupay_options_pdp[kupay_options_pdp_checkbox]" value="1" <?php echo esc_html(checked( 1, get_option( 'kupay_options_pdp' )['kupay_options_pdp_checkbox'], false )) ?> '/>
+
+            <br>
+            <br>
+
+			<label for="kupay_options_cart_checkbox"><b>Enable checkout button on Cart Page</b></label>
+            <input type="checkbox" id="kupay_options_cart_checkbox" name="kupay_options_cart[kupay_options_cart_checkbox]" value="1" <?php echo esc_html(checked( 1, get_option( 'kupay_options_cart' )['kupay_options_cart_checkbox'], false )) ?> '/>
+
+            <br>
+            <br>
+
+			<label for="kupay_options_checkout_checkbox"><b>Enable checkout button on Checkout Page</b></label>
+            <input type="checkbox" id="kupay_options_checkout_checkbox" name="kupay_options_checkout[kupay_options_checkout_checkbox]" value="1" <?php echo esc_html(checked( 1, get_option( 'kupay_options_checkout' )['kupay_options_checkout_checkbox'], false )) ?> '/>
+
 			<?php submit_button(); ?>
 
 		</form>
+		<style>
+		    input[type=checkbox] {
+		        margin-top: 3px;
+		    }
+		</style>
 	</div>
 	<?php
 }

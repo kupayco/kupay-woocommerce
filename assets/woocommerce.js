@@ -1,4 +1,13 @@
+function handleMessage(e) {
+    // e.data hold the message from child
+    if(e.data && e.data.orderConfirmed) {
+        window.removeEventListener('message', handleMessage);
+        window.location.href = `${window.location.origin}/checkout/order-received`;
+    }
+}
+
 function kupayBuildIframe(iframeUrl){
+    window.addEventListener('message', handleMessage , false);
 
     const w = 450;
     const h = 1000;
@@ -58,6 +67,7 @@ function kupayCartCheckout(){
     iframeUrl += "&currency=" + document.getElementById("kupay-currency").value;
     iframeUrl += "&deliveryCost=" + document.getElementById("kupay-delivery-cost").value;
     iframeUrl += "&cartId=" + document.getElementById("kupay-cart-id").value;
+    iframeUrl += "&cartTotal=" + document.getElementById("kupay-cart-total").value;
 
     kupayBuildIframe(iframeUrl);
 
@@ -119,19 +129,23 @@ if(document.getElementsByClassName('checkout-button').length > 0){
 
 }
 
+// whenever an order review mutation has occurred, the amplitude handler is added to the order review button
+const orderReview = document.getElementById('order_review')
+const orderReviewObserver = new MutationObserver(function (mutations) {
+    if(document.getElementById('place_order') != null){
 
-if(document.getElementById('place_order') != null){
-
-    document.getElementById('place_order').onclick = function() {
-        kupayEvent("CLICK", {
-            storeId: document.getElementById("kupay-app-id").value,
-            origin: "PLACE_ORDER",
-            platform: "WOOCOMMERCE"
-        })
+        document.getElementById('place_order').onclick = function() {
+            kupayEvent("CLICK", {
+                storeId: document.getElementById("kupay-app-id").value,
+                origin: "PLACE_ORDER",
+                platform: "WOOCOMMERCE"
+            })
+        }
+    
     }
+})
 
-}
-
+orderReviewObserver.observe(orderReview, { childList: true })
 
 
 if(document.getElementsByClassName('single_add_to_cart_button').length > 0){

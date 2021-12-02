@@ -1,7 +1,7 @@
 <?php
 
 function kupay_enqueue_kupay_js(){
-	wp_enqueue_script( 'kupay',  KUPAY_STATIC_URL . '/woocommerce.js' , [], false, true );
+	wp_enqueue_script( 'kupay',  KUPAY_STATIC_URL . '/woocommerce.js' , [], null, true );
 }
 
 function kupay_enqueue_kupay_css(){
