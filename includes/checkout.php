@@ -70,15 +70,15 @@ function kupay_get_shipping_methods($kupay_request): array {
     $shipping_methods = [];
 
     foreach ( WC()->cart->get_shipping_packages() as $package_id => $package ) {
-        // Loop through shipping rates for the current package
+        
         foreach ( WC()->session->get( 'shipping_for_package_'.$package_id )['rates'] as $shipping_rate_id => $shipping_rate ) {
-            $rate_id     = $shipping_rate->get_id(); // same thing that $shipping_rate_id variable (combination of the shipping method and instance ID)
-            $method_id   = $shipping_rate->get_method_id(); // The shipping method slug
-            $instance_id = $shipping_rate->get_instance_id(); // The instance ID
-            $label_name  = $shipping_rate->get_label(); // The label name of the method
-            $cost        = $shipping_rate->get_cost(); // The cost without tax
-            $tax_cost    = $shipping_rate->get_shipping_tax(); // The tax cost
-            $taxes       = $shipping_rate->get_taxes(); // The taxes details (array)
+            $rate_id     = $shipping_rate->get_id();
+            $method_id   = $shipping_rate->get_method_id();
+            $instance_id = $shipping_rate->get_instance_id();
+            $label_name  = $shipping_rate->get_label();
+            $cost        = $shipping_rate->get_cost();
+            $tax_cost    = $shipping_rate->get_shipping_tax();
+            $taxes       = $shipping_rate->get_taxes();
 
             array_push($shipping_methods, [
                 'rateId' => $rate_id,
