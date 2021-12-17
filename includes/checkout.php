@@ -27,6 +27,8 @@ function kupay_build_pdp_order_data($kupay_request): array {
 	$image_id  = $product_detail->get_image_id();
 	$image_url = wp_get_attachment_image_url( $image_id, 'full' );
 
+    $shipping_methods = kupay_get_shipping_methods( $kupay_request['customer']['shippingData'] );
+
 	return
 	[
 		'origin' => 'PDP',
@@ -54,7 +56,43 @@ function kupay_build_pdp_order_data($kupay_request): array {
 			'taxes' => (float)  WC()->cart->get_total_tax(),
 			'total' => (float) WC()->cart->total
 		],
+        'shippingMethods' => $shipping_methods
 	];
+}
+
+/**
+ * @param $kupay_request
+ *
+ * @return array
+ */
+function kupay_get_shipping_methods($kupay_request): array {
+
+    $shipping_methods = [];
+
+    foreach ( WC()->cart->get_shipping_packages() as $package_id => $package ) {
+        
+        foreach ( WC()->session->get( 'shipping_for_package_'.$package_id )['rates'] as $shipping_rate_id => $shipping_rate ) {
+            $rate_id     = $shipping_rate->get_id();
+            $method_id   = $shipping_rate->get_method_id();
+            $instance_id = $shipping_rate->get_instance_id();
+            $label_name  = $shipping_rate->get_label();
+            $cost        = $shipping_rate->get_cost();
+            $tax_cost    = $shipping_rate->get_shipping_tax();
+            $taxes       = $shipping_rate->get_taxes();
+
+            array_push($shipping_methods, [
+                'rateId' => $rate_id,
+                'methodId' => $method_id,
+                'instanceId' => $instance_id,
+                'label' => $label_name,
+                'cost' => $cost,
+                'taxCost' => $tax_cost,
+                'taxes' => $taxes
+            ]);
+        }
+    }
+
+    return $shipping_methods;
 }
 
 /**
@@ -71,7 +109,6 @@ function kupay_build_cart_order_data($kupay_request): array {
 	$cart_data = unserialize( $session_data['cart'] );
 
     $applied_coupons = unserialize($session_data['coupon_discount_totals']);
-    
 
 	if ( is_null( $cart_data ) ) {
 		throw new Exception("No cart data has been found!");
@@ -128,6 +165,8 @@ function kupay_build_cart_order_data($kupay_request): array {
 
 	kupay_calculate_cart_shipping( $kupay_request['customer']['shipping_data']);
 
+    $shipping_methods = kupay_get_shipping_methods( $kupay_request['customer']['shippingData'] );
+
 	return
 		[
 			'origin' => $kupay_request['origin'],
@@ -144,7 +183,7 @@ function kupay_build_cart_order_data($kupay_request): array {
 				'taxes' => (float)  WC()->cart->get_total_tax(),
 				'total' => (float) WC()->cart->total
 			],
-
+            'shippingMethods' => $shipping_methods
 		];
 }
 
