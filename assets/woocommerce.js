@@ -1,3 +1,19 @@
+function observeCartButton() {
+    const addToCartButton = document.querySelector(
+        ".single_add_to_cart_button"
+    );
+    const kupayBuyButton = document.querySelector(".kupay-buy");
+
+    setInterval(function () {
+        if (addToCartButton.classList.contains("disabled")) {
+            kupayBuyButton.classList.add("kupay-buy-disabled");
+        } else {
+            kupayBuyButton.classList.remove("kupay-buy-disabled");
+        }
+    }, 300);
+}
+observeCartButton();
+
 function handleMessage(e) {
     // e.data hold the message from child
     if (e.data && e.data.orderConfirmed) {
@@ -245,29 +261,3 @@ const orderReviewObserver = new MutationObserver(function (mutations) {
 });
 
 orderReviewObserver.observe(orderReview, { childList: true });
-
-if (document.getElementsByClassName("single_add_to_cart_button").length > 0) {
-    const addToCartButton = document.getElementsByClassName(
-        "single_add_to_cart_button"
-    )[0];
-
-    const kupayBuyButton = document.getElementsByClassName("kupay-buy")[0];
-
-    const observer = new MutationObserver(function (mutations) {
-        mutations.forEach(function (mutation) {
-            if (addToCartButton.classList.contains("disabled")) {
-                kupayBuyButton.classList.add("kupay-buy-disabled");
-            } else {
-                kupayBuyButton.classList.remove("kupay-buy-disabled");
-            }
-        });
-    });
-
-    // Start observing myElem
-    observer.observe(addToCartButton, { attributes: true });
-
-    // Testing the observer gets triggered
-    setTimeout(function () {
-        addToCartButton.disabled = false;
-    }, 3000);
-}
