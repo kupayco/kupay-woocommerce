@@ -1,18 +1,24 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;900&display=swap");
 
 .kupay-buy {
-    display: block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     border: 1px solid;
     text-align: center;
     background-color: #122143;
-    color: #FFF;
+    color: #fff;
     padding: 8px 0;
     border-radius: 6px;
     cursor: pointer;
-    font-family: 'Roboto', sans-serif;
+    font-family: "Roboto", sans-serif;
     font-weight: 500;
     margin: 20px auto;
     min-width: 200px;
+}
+.kupay-buy svg {
+    width: 24px;
+    margin-right: 8px;
 }
 
 .kupay-buy-disabled {
