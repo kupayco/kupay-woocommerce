@@ -2,7 +2,6 @@
 
 function kupay_enqueue_kupay_js(){
 	wp_enqueue_script( 'kupay',  KUPAY_STATIC_URL . '/woocommerce.js' , [], null, true );
-    wp_enqueue_script( 'kupay',  KUPAY_STATIC_URL . '/refund.js' , [], null, true );
 }
 
 function kupay_enqueue_kupay_css(){
