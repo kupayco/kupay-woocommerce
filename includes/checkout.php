@@ -273,6 +273,32 @@ function kupay_order_checkout(WP_REST_Request $kupay_request) {
 }
 
 /**
+ * @param WP_REST_Request $kupay_request
+ */
+function kupay_order_refund(WP_REST_Request $kupay_request) {
+    try {
+
+        $kupay_request = json_decode($kupay_request->get_body(), true);
+        $order = new WC_Order($kupay_request['storeOrderId']);
+
+        $order->update_status('refunded');
+
+        wp_send_json([
+            'code'=> 200,
+            'message' => 'Status updated'
+        ]);
+
+    } catch ( Exception $e ) {
+
+        wp_send_json([
+            'code'=> 500,
+            'message' => $e->getMessage()
+        ]);
+
+    }
+}
+
+/**
  * @throws Exception
  */
 function kupay_checkout_order_in_woocommerce($kupay_request){
@@ -339,7 +365,6 @@ function kupay_checkout_order_in_woocommerce($kupay_request){
 	return $order;
 
 }
-
 
 function kupay_create_customer($kupay_request){
 	return wc_create_new_customer( $kupay_request['customer']['email'], $kupay_request['customer']['email']);
