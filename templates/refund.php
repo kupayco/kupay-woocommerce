@@ -3,6 +3,7 @@
 function action_woocommerce_order_item_add_action_buttons( $order )
 {
     wp_enqueue_script( 'kupay',  KUPAY_STATIC_URL . '/refund.js' , [], null, true );
+
     global $kupay_api_url;
     $app_id = get_option('kupay_options_app_id');
 
