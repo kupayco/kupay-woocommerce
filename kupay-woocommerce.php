@@ -50,16 +50,14 @@ if(get_option('kupay_options_checkout')) {
 $kupay_iframe_url = "https://checkout.kupay.co/#/order-received";
 
 if(get_option( 'kupay_options_test_mode' )){
-    // $kupay_iframe_url = "http://localhost:3001/#/order-received";
-    $kupay_iframe_url = "https://development.dg9bl7bxpfwe3.amplifyapp.com/#/order-received";
+    $kupay_iframe_url = "http://localhost:3001/#/order-received";
 }
 
 // API URL
 $kupay_api_url = 'https://api.kupay.co';
 
 if(get_option( 'kupay_options_test_mode' )){
-    // $kupay_api_url = "http://localhost:3000/dev";
-    $kupay_api_url = $kupay_api_url . "/development";
+    $kupay_api_url = "http://localhost:3000/dev";
 }
 
 define("KUPAY_IFRAME_URL", $kupay_iframe_url);
