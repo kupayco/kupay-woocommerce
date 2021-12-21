@@ -31,8 +31,6 @@ add_action('admin_menu', 'kupay_create_settings_menu');
 
 //Refund button
 add_action( 'woocommerce_order_item_add_action_buttons', 'action_woocommerce_order_item_add_action_buttons', 10, 1);
-// Refund button action
-add_action('save_post', 'renew_save_again', 10, 3);
 
 // Templates
 if(get_option('kupay_options_pdp')) {
