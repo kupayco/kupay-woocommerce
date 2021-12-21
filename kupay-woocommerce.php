@@ -20,6 +20,7 @@ require_once('assets/assets.php');
 require_once('templates/pdp.php');
 require_once('templates/cart.php');
 require_once('templates/checkout.php');
+require_once('templates/refund.php');
 
 // Assets
 add_action( 'wp_enqueue_scripts', 'kupay_enqueue_kupay_js' );
@@ -27,6 +28,9 @@ add_action( 'wp_enqueue_scripts', 'kupay_enqueue_kupay_css' );
 
 // Settings
 add_action('admin_menu', 'kupay_create_settings_menu');
+
+//Refund button
+add_action( 'woocommerce_order_item_add_action_buttons', 'action_woocommerce_order_item_add_action_buttons', 10, 1);
 
 // Templates
 if(get_option('kupay_options_pdp')) {
@@ -47,6 +51,13 @@ $kupay_iframe_url = "https://checkout.kupay.co/#/order-received";
 
 if(get_option( 'kupay_options_test_mode' )){
     $kupay_iframe_url = "https://development.dg9bl7bxpfwe3.amplifyapp.com/#/order-received";
+}
+
+// API URL
+$kupay_api_url = 'https://api.kupay.co';
+
+if(get_option( 'kupay_options_test_mode' )){
+    $kupay_api_url = "http://localhost:3000/dev";
 }
 
 define("KUPAY_IFRAME_URL", $kupay_iframe_url);
