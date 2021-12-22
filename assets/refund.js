@@ -35,6 +35,7 @@ function kupayRefundOrder() {
                 return response.text();
             }).then(response => {
                 alert(response);
+                location.reload();
             }).catch(err => alert(err.message));
         }
 
