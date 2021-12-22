@@ -34,7 +34,7 @@ function kupayRefundOrder() {
         }).catch(err => alert(err.message));
 
     } else {
-        throw new Error('Order doesn\'t exists!');
+        alert('Sorry, there has been an error');
     }
 }
 
