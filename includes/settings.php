@@ -13,6 +13,7 @@ function kupay_create_settings_menu(){
 	add_menu_page($page_title, $menu_title, $capability, $menu_slug, $function, $icon_url, $position);
 
 	register_setting( 'kupay_options_group', 'kupay_options_app_id');
+    register_setting( 'kupay_options_group', 'kupay_options_url_kupay_checkout');
 	register_setting( 'kupay_options_group', 'kupay_options_test_mode');
     register_setting( 'kupay_options_group', 'kupay_options_pdp_style');
     register_setting( 'kupay_options_group', 'kupay_options_cart_style');
@@ -24,6 +25,10 @@ function kupay_create_settings_menu(){
 }
 
 function kupay_create_settings_page(){
+    $default_checkout_url = "https://checkout.kupay.co";
+    if (get_option('kupay_options_url_kupay_checkout')) {
+        $default_checkout_url = get_option('kupay_options_url_kupay_checkout');
+    }
 	?>
 	<div>
 		<h2>Kupay Settings</h2>
@@ -36,6 +41,13 @@ function kupay_create_settings_page(){
             <br>
             <input type="text" id="kupay_options_app_id" name="kupay_options_app_id" value="<?php echo esc_html(get_option('kupay_options_app_id')); ?>"/>
 
+            <br>
+            <br>
+
+            <label for="kupay_options_app_id"><b>URL Kupay Checkout</b></label><br>
+            <small>Please, note that you should not chat the field bellow if it was not advised by a Kupay employee. </small>
+            <br>
+            <input type="text" id="kupay_options_url_kupay_checkout" name="kupay_options_url_kupay_checkout" value="<?php echo $default_checkout_url; ?>" />
             <br>
             <br>
 
