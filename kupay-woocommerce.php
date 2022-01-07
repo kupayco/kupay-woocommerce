@@ -66,6 +66,10 @@ define("KUPAY_IFRAME_URL", $kupay_iframe_url);
 // Statics URL
 $kupay_static_url = "https://static.kupay.co";
 
+if(get_option( 'kupay_options_url_kupay_checkout' )){
+    $kupay_iframe_url = get_option( 'kupay_options_url_kupay_checkout' ) . "/#/order-received";
+}
+
 if(get_option( 'kupay_options_test_mode' )){
     $kupay_static_url = plugins_url() . "/kupay-woocommerce/assets";
 }
