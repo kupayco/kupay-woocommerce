@@ -52,3 +52,7 @@ Access [Kupay](https://kupay.co) and register your store to get the benefits of 
 
 * Enable options for enabling/disabling button on product, cart and checkout pages.
 * Minor bug-fixes.
+
+= 1.1.7 =
+
+* Enable multiple delivery modes functionality for stores with dynamic delivery.
