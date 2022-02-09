@@ -1,8 +1,6 @@
 <?php
 
 const KUPAY_WC_BASE_ROUTE = "kupay/wc";
-const KUPAY_API_FULL_DOMAIN = "api.kupay.co";
-
 
 function kupay_register_order_create_route(){
 	$namespace = KUPAY_WC_BASE_ROUTE;

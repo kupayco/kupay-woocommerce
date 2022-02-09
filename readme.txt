@@ -56,3 +56,8 @@ Access [Kupay](https://kupay.co) and register your store to get the benefits of 
 = 1.1.7 =
 
 * Enable multiple delivery modes functionality for stores with dynamic delivery.
+
+= v080222.1 =
+
+* Allow refund using Stripe Connect ID;
+* Minor bug-fixes.

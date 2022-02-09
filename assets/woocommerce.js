@@ -18,7 +18,7 @@ function handleMessage(e) {
     // e.data hold the message from child
     if (e.data && e.data.orderConfirmed) {
         window.removeEventListener("message", handleMessage);
-        window.location.href = `${window.location.origin}/checkout/order-received`;
+        // window.location.href = `${window.location.origin}/checkout/order-received`;
     }
 }
 
@@ -102,3 +102,5 @@ if (document.getElementsByClassName("kupay-buy").length > 0) {
     document.getElementsByClassName("kupay-buy")[0].innerHTML +=
         "COMPRAR AHORA";
 }
+
+console.log("KUPAY_WOOCOMMERCE_VERSION: ", document.getElementById("kupay-woocommerce-version").value)

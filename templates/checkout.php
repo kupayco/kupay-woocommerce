@@ -22,6 +22,7 @@ function kupay_render_checkout(){
 	$cartID = $session_id;
 	$cartTotal = (float) WC()->cart->total;
 
+    echo '<input type="hidden" id="kupay-woocommerce-version" name="kupay-woocommerce-version" value="' . esc_attr(KUPAY_WOOCOMMERCE_VERSION) . '">';
 	echo '<input type="hidden" id="kupay-url" name="kupay-url" value="' . esc_url($kupayUrl) . '">';
 	echo '<input type="hidden" id="kupay-app-id" name="kupay-app-id" value="' . esc_attr($appId) . '">';
 	echo '<input type="hidden" id="kupay-requires-processing" name="kupay-requires-processing" value="' . esc_attr($requiresProcessing) . '">';

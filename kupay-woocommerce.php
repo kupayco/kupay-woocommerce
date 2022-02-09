@@ -1,16 +1,18 @@
 <?php
 /**
  * @package Kupay
- * @version 1.1.7
+ * @version v080222.1
  */
 /*
 Plugin Name: Kupay One-Click Checkout for WooCommerce
 Plugin URI: http://kupay.co
 Description: Kupay for WooCommerce
 Author: Kupay
-Version: 1.1.7
+Version: v080222.1
 Author URI: http://kupay.co
 */
+
+const KUPAY_WOOCOMMERCE_VERSION = "v080222.1";
 
 // Requires
 require_once('includes/settings.php');
