@@ -18,6 +18,7 @@ function kupay_render_pdp(){
 	$currency = "EUR";
 	$deliveryCost = 0;
 
+    echo '<input type="hidden" id="kupay-woocommerce-version" name="kupay-woocommerce-version" value="' . esc_attr(KUPAY_WOOCOMMERCE_VERSION) . '">';
 	echo '<input type="hidden" id="kupay-url" name="kupay-url" value="' . esc_url($kupayUrl) . '">';
 	echo '<input type="hidden" id="kupay-app-id" name="kupay-app-id" value="' . esc_attr($appId) . '">';
 	echo '<input type="hidden" id="kupay-product-id" name="kupay-product-id" value="' . esc_attr($productId) . '">';

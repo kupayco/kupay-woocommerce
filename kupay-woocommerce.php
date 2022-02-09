@@ -12,6 +12,8 @@ Version: v080222.1
 Author URI: http://kupay.co
 */
 
+const KUPAY_WOOCOMMERCE_VERSION = "v080222.1";
+
 // Requires
 require_once('includes/settings.php');
 require_once('includes/checkout.php');
