@@ -48,11 +48,12 @@
   position: fixed;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 600px;
+  width: 300px;
   text-align: left;
   height: 98vh;
   z-index: 99999;
   opacity: 0;
+  padding: 24px 0 6px 0;
 }
 .show {
   opacity: 1;
@@ -79,17 +80,17 @@
 #kupay-close-modal {
   cursor: pointer;
   position: absolute;
-  right: 20px;
-  top: 80px;
-  padding: 0.3em;
+  right: 15px;
+  top: 0px;
+  padding: 0 10px;
   font-size: 1.5em;
-  color: #fff;
+  color: #000;
   background-color: transparent;
   border: 0;
 }
 #kupay-close-modal:hover {
   background-color: rgba(255, 255, 255, 0.103);
-  color: #000;
+  color: #fff;
 }
 
 @keyframes fade {
@@ -98,6 +99,12 @@
   }
   100% {
     opacity: 1;
+  }
+}
+
+@media (min-width: 768px) {
+  .kupay-modal {
+    width: 550px;
   }
 }
 /* MODAL */
