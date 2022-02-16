@@ -29,7 +29,7 @@ function kupay_render_pdp(){
 	echo '<input type="hidden" id="kupay-origin" name="kupay-origin" value="' . esc_attr($origin) . '">';
 	echo '<input type="hidden" id="kupay-currency" name="kupay-currency" value="' . esc_attr($currency) . '">';
 	echo '<input type="hidden" id="kupay-delivery-cost" name="kupay-delivery-cost" value="' . esc_attr($deliveryCost) . '">';
-	
+  echo '<span class="kupay-tooltip">Elige las opciones del producto antes de añadir este producto a tu carrito.</span>';
 	echo '<kupay class="kupay-buy kupay-buy-pdp" onclick="kupayPDPCheckout()">COMPRAR EN 1-CLICK</kupay>';
 
     echo '<style>' . get_option("kupay_options_pdp_style") .  '</style>';
