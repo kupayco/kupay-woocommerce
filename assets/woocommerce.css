@@ -23,7 +23,6 @@
 
 .kupay-buy-disabled {
   background-color: #48587c !important;
-  pointer-events: none !important;
 }
 
 /*.kupay-buy:before{*/
@@ -56,10 +55,10 @@
   padding: 24px 0 6px 0;
 }
 .show {
-  opacity: 1;
-  visibility: visible;
-  animation: fade 0.3s;
-  -webkit-animation: fade 0.3s;
+  opacity: 1 !important;
+  visibility: visible !important;
+  animation: fade 0.3s !important;
+  -webkit-animation: fade 0.3s !important;
 }
 .kupay-modal iframe {
   width: 100%;
@@ -108,3 +107,32 @@
   }
 }
 /* MODAL */
+
+/* TOOLTIP */
+.kupay-tooltip {
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+  color: #000;
+  font-size: 12px;
+  font-weight: 400;
+  padding: 8px;
+  text-align: center;
+  z-index: 99999;
+  width: 65%;
+  position: relative;
+  margin-bottom: -15px;
+  opacity: 0;
+  visibility: hidden;
+}
+.kupay-tooltip::after {
+  content: " ";
+  position: absolute;
+  top: 100%; /* At the bottom of the tooltip */
+  left: 5%;
+  margin-left: -5px;
+  border-width: 10px;
+  border-style: solid;
+  border-color: #fff transparent transparent transparent;
+  backdrop-filter: shadow(0 0 4px rgba(0, 0, 0, 0.2));
+}
