@@ -32,7 +32,7 @@ function kupay_render_cart(){
 	echo '<input type="hidden" id="kupay-delivery-cost" name="kupay-delivery-cost" value="' . esc_attr($deliveryCost) . '">';
 	echo '<input type="hidden" id="kupay-cart-id" name="kupay-cart-id" value="' . esc_attr($cartID) . '">';
 	echo '<input type="hidden" id="kupay-cart-total" name="kupay-cart-total" value="' . esc_attr($cartTotal) . '">';
-	
+  echo '<span class="kupay-tooltip>Elige las opciones del producto antes de añadir este producto a tu carrito.</span>';
 	echo '<kupay class="kupay-buy kupay-buy-cart" onclick="kupayCartCheckout()">COMPRAR EN 1-CLICK</kupay>';
 
     echo '<style>' . get_option("kupay_options_cart_style") .  '</style>';
