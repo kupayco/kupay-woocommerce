@@ -38,7 +38,7 @@ function kupay_register_refund_route()
 }
 
 function kupay_is_request_authorized(WP_REST_Request $kupay_request){
-	return $kupay_request->get_header("authorization") == get_option('kupay_options_app_id');
+	return $kupay_request->get_header("authorization") == trim(get_option('kupay_options_app_id'));
 }
 
 add_action('rest_api_init', 'kupay_register_order_create_route');
