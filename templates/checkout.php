@@ -17,7 +17,7 @@ function kupay_render_checkout(){
 	$appId = get_option("kupay_options_app_id");
 	$requiresProcessing = true;
 	$origin = "CHECKOUT";
-	$currency = get_option("kupay_options_currency");
+    $currency = "EUR";
 	$deliveryCost = 0;
 	$cartID = $session_id;
 	$cartTotal = (float) WC()->cart->total;
