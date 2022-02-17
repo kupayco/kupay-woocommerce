@@ -65,3 +65,7 @@ Access [Kupay](https://kupay.co) and register your store to get the benefits of 
 
 * Allow refund using Stripe Connect ID;
 * Minor bug-fixes.
+
+= 1.1.10 =
+
+* Minor bug-fixes.
