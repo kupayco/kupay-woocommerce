@@ -69,3 +69,7 @@ Access [Kupay](https://kupay.co) and register your store to get the benefits of 
 = 1.1.10 =
 
 * Minor bug-fixes.
+
+= 1.1.11 =
+
+* Minor bug-fixes.
