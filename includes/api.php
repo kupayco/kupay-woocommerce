@@ -9,7 +9,7 @@ function kupay_register_order_create_route(){
 	register_rest_route($namespace, $route, array(
 		'methods'   => WP_REST_Server::CREATABLE,
 		'callback'  => 'kupay_order_create',
-		'permission_callback' => 'kupay_is_request_authorized'
+//		'permission_callback' => 'kupay_is_request_authorized'
 	));
 }
 
@@ -21,7 +21,7 @@ function kupay_register_checkout_route()
 	register_rest_route($namespace, $route, array(
 		'methods'   => WP_REST_Server::CREATABLE,
 		'callback'  => 'kupay_order_checkout',
-		'permission_callback' => 'kupay_is_request_authorized'
+//		'permission_callback' => 'kupay_is_request_authorized'
 	));
 }
 
@@ -33,7 +33,7 @@ function kupay_register_refund_route()
     register_rest_route($namespace, $route, array(
         'methods'   => WP_REST_Server::CREATABLE,
         'callback'  => 'kupay_order_refund',
-        'permission_callback' => 'kupay_is_request_authorized'
+//        'permission_callback' => 'kupay_is_request_authorized'
     ));
 }
 
