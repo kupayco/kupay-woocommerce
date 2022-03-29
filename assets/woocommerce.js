@@ -26,6 +26,7 @@ function handleMessage(e) {
 }
 
 function kupayBuildIframe(iframeUrl) {
+    buildBackDrop();
     window.addEventListener("message", handleMessage, false);
 
     const w = 450;
@@ -45,8 +46,16 @@ function kupayBuildIframe(iframeUrl) {
             ", left=" +
             left
     );
-}
 
+    const backdrop = document.createElement('kupay-backdrop')
+    backdrop.addEventListener("focus-kupay-window", () => {
+        window.open("", "Kupay Checkout").focus()
+    });
+    backdrop.addEventListener("remove-kupay-backdrop", () => {
+        backdrop.remove()
+    });
+    document.querySelector("body").appendChild(backdrop);
+}
 
 function buildBackDrop() {
     const template = document.createElement("template");
