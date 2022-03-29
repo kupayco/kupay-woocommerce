@@ -1,10 +1,6 @@
 var popupWindow = null;
 
 function observeCartButton() {
-    if(popupWindow && popupWindow.closed) {
-        window.document.querySelector("kupay-backdrop").dispatchEvent(new Event("remove-kupay-backdrop"));
-        popupWindow = null
-    }
     const addToCartButton = document.querySelector(
         ".single_add_to_cart_button"
     );
@@ -12,6 +8,11 @@ function observeCartButton() {
     const kupayBuyButton = document.querySelector(".kupay-buy");
 
     setInterval(function () {
+        if(popupWindow && popupWindow.closed) {
+            console.log('POPUP WINDOW', popupWindow)
+            window.document.querySelector("kupay-backdrop").dispatchEvent(new Event("remove-kupay-backdrop"));
+            popupWindow = null
+        }
         if (addToCartButton !== null && addToCartButton.classList.contains("disabled")) {
             kupayBuyButton.classList.add("kupay-buy-disabled");
         } else {
