@@ -1,4 +1,5 @@
 var popupWindow = null;
+buildBackDrop();
 
 function observeCartButton() {
     const addToCartButton = document.querySelector(
@@ -32,7 +33,6 @@ function handleMessage(e) {
 }
 
 function kupayBuildIframe(iframeUrl) {
-    buildBackDrop();
     window.addEventListener("message", handleMessage, false);
 
     const w = 450;
