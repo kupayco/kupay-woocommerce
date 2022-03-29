@@ -1,5 +1,10 @@
+var popupWindow = null;
 
 function observeCartButton() {
+    if(popupWindow && popupWindow.closed) {
+        window.document.querySelector("kupay-backdrop").dispatchEvent(new Event("remove-kupay-backdrop"));
+        popupWindow = null
+    }
     const addToCartButton = document.querySelector(
         ".single_add_to_cart_button"
     );
@@ -34,7 +39,7 @@ function kupayBuildIframe(iframeUrl) {
     var left = screen.width / 2 - w / 2;
     var top = screen.height / 2 - h / 2;
 
-    window.open(
+    popupWindow = window.open(
         iframeUrl,
         "Kupay Checkout",
         "_self, toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=" +
