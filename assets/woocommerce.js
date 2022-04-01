@@ -5,13 +5,16 @@ function observeCartButton() {
 
     const kupayBuyButton = document.querySelector(".kupay-buy");
 
-    setInterval(function () {
-        if (addToCartButton !== null && addToCartButton.classList.contains("disabled")) {
-            kupayBuyButton.classList.add("kupay-buy-disabled");
-        } else {
-            kupayBuyButton.classList.remove("kupay-buy-disabled");
-        }
-    }, 300);
+
+    if(kupayBuyButton !== null){
+        setInterval(function () {
+            if (addToCartButton !== null && addToCartButton.classList.contains("disabled")) {
+                kupayBuyButton.classList.add("kupay-buy-disabled");
+            } else {
+                kupayBuyButton.classList.remove("kupay-buy-disabled");
+            }
+        }, 300);
+    }
 }
 observeCartButton();
 
@@ -59,10 +62,22 @@ function kupayPDPCheckout() {
         "&productId=" + document.getElementById("kupay-product-id").value;
     iframeUrl +=
         "&productName=" + document.getElementById("kupay-product-name").value;
-    iframeUrl +=
-        "&productQuantity=" +
-        document.getElementsByClassName("input-text qty text").quantity
+
+    let productQuantity = 1
+
+    if(document.getElementsByClassName("input-text qty text").length > 0){
+        productQuantity = document.getElementsByClassName("input-text qty text").quantity
             .valueAsNumber;
+    }
+
+    iframeUrl += "&productQuantity=" + productQuantity;
+
+    // iframeUrl +=
+    //     "&productQuantity=" +
+    //     document.getElementsByClassName("input-text qty text").quantity
+    //         .valueAsNumber;
+
+
     iframeUrl += "&productImageUrl=" + "";
     iframeUrl +=
         "&productPrice=" + document.getElementById("kupay-product-price").value;
