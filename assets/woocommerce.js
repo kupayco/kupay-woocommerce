@@ -1,21 +1,29 @@
+var popupWindow = null;
+buildBackDrop();
+
 function observeCartButton() {
+  
     const addToCartButton = document.querySelector(
         ".single_add_to_cart_button"
     );
 
     const kupayBuyButton = document.querySelector(".kupay-buy");
 
+    setInterval(function () {
+        if(popupWindow && popupWindow.closed) {
+            console.log('POPUP WINDOW', popupWindow)
+            window.document.querySelector("kupay-backdrop").dispatchEvent(new Event("remove-kupay-backdrop"));
+            popupWindow = null
+        }
+        if (addToCartButton !== null && addToCartButton.classList.contains("disabled")) {
+            kupayBuyButton.classList.add("kupay-buy-disabled");
+        } else {
+            kupayBuyButton.classList.remove("kupay-buy-disabled");
+        }
+    }, 300);
 
-    if(kupayBuyButton !== null){
-        setInterval(function () {
-            if (addToCartButton !== null && addToCartButton.classList.contains("disabled")) {
-                kupayBuyButton.classList.add("kupay-buy-disabled");
-            } else {
-                kupayBuyButton.classList.remove("kupay-buy-disabled");
-            }
-        }, 300);
-    }
 }
+
 observeCartButton();
 
 function handleMessage(e) {
@@ -34,7 +42,7 @@ function kupayBuildIframe(iframeUrl) {
     var left = screen.width / 2 - w / 2;
     var top = screen.height / 2 - h / 2;
 
-    window.open(
+    popupWindow = window.open(
         iframeUrl,
         "Kupay Checkout",
         "_self, toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=" +
@@ -46,6 +54,98 @@ function kupayBuildIframe(iframeUrl) {
             ", left=" +
             left
     );
+
+    const backdrop = document.createElement('kupay-backdrop')
+    backdrop.addEventListener("focus-kupay-window", () => {
+        window.open("", "Kupay Checkout").focus()
+    });
+    backdrop.addEventListener("remove-kupay-backdrop", () => {
+        backdrop.remove()
+    });
+    document.querySelector("body").appendChild(backdrop);
+}
+
+function buildBackDrop() {
+    const template = document.createElement("template");
+    const lang = document.documentElement.lang.replace(/[\s\S]{0,3}$/, '')
+    const translations = {
+        en: {
+            message: "No longer see the Kupay window?",
+            focusBtn: "Click here" 
+        },
+        es: {
+            message: "¿Ya no ves la ventana de Kupay?",
+            focusBtn: "Haga clic aquí" 
+        },
+        pt: {
+            message: "Não está vendo a janela da Kupay?",
+            focusBtn: "Clique aqui" 
+        }
+    }
+    template.innerHTML = `
+        <style>
+            :host {
+                display: block;
+            }
+            :host div.kupay-backdrop {
+                z-index: 999;
+                position: fixed; 
+                top: -1000px; 
+                bottom: -1000px; 
+                left: -1000px; 
+                right: -1000px;
+                background-color: rgba(0, 0, 0, 0.7);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+            }
+            :host div.kupay-backdrop__message {
+                font-family: Poppins,'Open Sans',Lato, sans-serif;
+                font-style: normal;
+                font-weight: normal;
+                font-size: 18px;
+                line-height: 16px;
+                text-align: center;
+                color: #FFFFFF;
+            }
+            :host div.kupay-backdrop__message .kupay-backdrop__logo {
+                margin-bottom: 32px;
+            }
+        
+            :host div.kupay-backdrop__message .kupay-backdrop__focus-to-kupay-window {
+                color: #dfe7fb;
+                text-decoration: underline;
+                cursor: pointer;
+            }
+        </style>
+        <div class="kupay-backdrop">
+            <div class="kupay-backdrop__message">
+                <div class="kupay-backdrop__logo">
+                    <img alt="Kupay Logo" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTQ0IiBoZWlnaHQ9IjU1IiB2aWV3Qm94PSIwIDAgMTQ0IDU1IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8ZyBjbGlwLXBhdGg9InVybCgjY2xpcDBfMTEyXzEwODMpIj4KPHBhdGggZD0iTTUwLjM4MDEgNDMuMjQ0MkM0OS43MjY2IDQzLjI0NDIgNDguMTk3NyA0My4yNDQyIDM2LjU0MjIgMzYuNTM3MkMzNi40NTA2IDM2LjQ4NSAzNi4zNjA2IDM2LjQzMjcgMzYuMjY5IDM2LjM3ODlDMzUuMTY2OSAzNy40MjAzIDM0LjEyMzkgMzguMzgyNSAzMy4xNzI0IDM5LjIzNTVDMjguNjk4OSA0My4yNDI2IDI4LjAyMDYgNDMuMjQyNiAyNy41MjU1IDQzLjI0MjZDMjUuMzg2NSA0My4yNDI2IDIzLjUxMTUgNDEuMzI5MiAyMy41MTE1IDM5LjE1VjE1Ljg0OTdDMjMuNTExNSAxNC4yMDM5IDI0LjU4MDkgMTEuNzU3MiAyNy41MjU1IDExLjc1NzJDMjguMDQwOCAxMS43NTcyIDI4Ljc0NyAxMS43NTcyIDMzLjIzNzYgMTUuODE4MUMzNC4xNjU4IDE2LjY1ODQgMzUuMTg4NyAxNy42MTEyIDM2LjI3NTIgMTguNjQ3N0MzNi4zODM5IDE4LjU4NiAzNi40OTEgMTguNTIyNyAzNi41OTk2IDE4LjQ2MUM0OC4yOTIzIDExLjc1NTYgNDkuNzU0NSAxMS43NTU2IDUwLjM4MDEgMTEuNzU1NkM1Mi44NjA1IDExLjc1NTYgNTQuMzk0IDEzLjg3OTQgNTQuMzk0IDE1Ljg0ODJDNTQuMzk0IDE2LjUyODcgNTQuMDgzNiAxNy42MTI3IDUwLjM3MjMgMjEuODc2MkM0OC45NDc0IDIzLjUxMjYgNDcuMTUxNSAyNS40NjIzIDQ1LjE0NzYgMjcuNTU0NUM0Ny4xNDM3IDI5LjY1MTQgNDguOTQ1OCAzMS42MTcgNTAuMzkyNSAzMy4yNzU1QzU0LjM5NCAzNy44NjUgNTQuMzk0IDM4LjYzODkgNTQuMzk0IDM5LjE1MTZDNTQuMzk0IDQxLjQwODQgNTIuNTkzNSA0My4yNDQyIDUwLjM4MDEgNDMuMjQ0MlpNMzguMDM4NSAzNC42ODg3QzQ4LjI1NTEgNDAuNTUwNiA1MC4xMSA0MC44NzgyIDUwLjM4MDEgNDAuODg0NUM1MS4xNzE3IDQwLjg4NDUgNTIuMDE3NiA0MC4yMzU3IDUyLjA3NTEgMzkuMjU3NkM1MS43MzgyIDM4LjQ0NzQgNDkuMTc4NyAzNS4xNjk5IDQzLjUyMjQgMjkuMjMzNkM0My4wMTE4IDI5Ljc1NzQgNDIuNDkwMiAzMC4yODYgNDEuOTYyNSAzMC44MTc4QzQwLjYzMjIgMzIuMTU2NiAzOS4zMDk4IDMzLjQ2MDcgMzguMDM4NSAzNC42ODg3Wk0yNS44MjQzIDMwLjE2ODlWMzkuMTUzMkMyNS44MjQzIDM5LjkxOTIgMjYuNTA0MSA0MC44MDU0IDI3LjM5OTcgNDAuODgxNEMyOC4xNjY1IDQwLjUyMjEgMzAuNjYwOSAzOC40MzQ3IDM0LjE1NjUgMzUuMTU3MkMzMC4yNTI3IDMyLjg3MDQgMjYuODY1OCAzMC44MDUxIDI1LjgyNDMgMzAuMTY4OVpNMjYuNzEwNiAyNy45NTY1QzI3LjAwNyAyOC4xMzg1IDMxLjE2MjMgMzAuNjkxMiAzNS45MzIyIDMzLjQ3MDJDMzcuMzE4MyAzMi4xMzkyIDM4LjgyMzkgMzAuNjYxMSA0MC40MTAzIDI5LjA2MjdDNDAuOTI4NyAyOC41Mzg5IDQxLjQyNyAyOC4wMzQgNDEuOTAzNSAyNy41NDgyQzQxLjQyMDggMjcuMDUxMiA0MC45MjEgMjYuNTM4NSA0MC4zOTk0IDI2LjAwODNDMzguODAzNyAyNC4zODYyIDM3LjMwMjggMjIuODk1NCAzNS45MjI5IDIxLjU1NjVDMzIuOTI4NyAyMy4yOTEgMjkuNzU5MSAyNS4xNzkgMjYuNzA5IDI3LjA0NDlDMjYuNTAyNiAyNy4xODI2IDI2LjI4MzcgMjcuMzQ4OCAyNi4xMDM2IDI3LjUwMDdDMjYuMjgzNyAyNy42NTI2IDI2LjUwNDEgMjcuODE4OCAyNi43MTA2IDI3Ljk1NjVaTTM4LjAzMDggMjAuMzQ0M0MzOS4zMTYgMjEuNTk5MiA0MC42NjE3IDIyLjkzOTcgNDIuMDIxNSAyNC4zMjI5QzQyLjUzMjEgMjQuODQxOSA0My4wMzUgMjUuMzU3OSA0My41MzAyIDI1Ljg2OUM0OS45MzQ2IDE5LjIwMDEgNTEuODU5MyAxNi4zODc4IDUyLjA3NjYgMTUuNzczOEM1Mi4wMzc4IDE0Ljk2MDMgNTEuMzY1NyAxNC4xMTY4IDUwLjM3ODUgMTQuMTE2OEM0OS4zMDEzIDE0LjE2MTEgNDQuMjI1NiAxNi44MDg4IDM4LjAzMDggMjAuMzQ0M1pNMjcuNDA3NSAxNC4xMTg0QzI2LjU3NCAxNC4xNTE2IDI2LjI2MzUgMTQuNTM0NiAyNi4wODY2IDE0Ljg3MDFDMjUuODM4MiAxNS4zMzg2IDI1LjgyNTggMTUuODU0NSAyNS44MjU4IDE1Ljg1OTJWMjQuODM0QzI2Ljg2MjcgMjQuMjAyNiAzMC4yNTU4IDIyLjE0ODQgMzQuMTY0MiAxOS44Njk1QzMwLjYzMTQgMTYuNTI1NSAyOC4xNjE5IDE0LjQ1MjMgMjcuNDA3NSAxNC4xMTg0WiIgZmlsbD0idXJsKCNwYWludDBfbGluZWFyXzExMl8xMDgzKSIvPgo8cGF0aCBkPSJNNzAuMjA3OSAxOS44NlYyOC4zNDQyQzcwLjIwNzkgMjguMzk5NiA3MC4yNzQ3IDI4LjQyNDkgNzAuMzEwNCAyOC4zODU0TDc0LjA2MiAyNC4yNDg1Qzc0LjExNjQgMjQuMTg4NCA3NC4xOTQgMjQuMTUzNiA3NC4yNzQ3IDI0LjE1MzZINzcuNzc5NkM3OC4wMzQxIDI0LjE1MzYgNzguMTY2MSAyNC40NjM4IDc3Ljk5MDcgMjQuNjUzN0w3NC4wNTEyIDI4LjkyMTlDNzQuMDMyNiAyOC45NDI1IDc0LjAzMSAyOC45NzQxIDc0LjA0NjUgMjguOTk2M0w3OC41MjYyIDM1LjAzMjJDNzguNjcwNSAzNS4yMjY5IDc4LjUzMzkgMzUuNTA3IDc4LjI5NDkgMzUuNTA3SDc0Ljc3OTJDNzQuNjkwNyAzNS41MDcgNzQuNjA4NCAzNS40NjQzIDc0LjU1NTYgMzUuMzkzTDcxLjY4NTYgMzEuNTE0MUM3MS42ODU2IDMxLjUxMjYgNzEuNjg0MSAzMS41MTI2IDcxLjY4MjUgMzEuNTE0MUw3MC4yMDY0IDMzLjEwNjJWMzMuMTA3OFYzNS4yMTU4QzcwLjIwNjQgMzUuMzc3MiA3MC4wNzc2IDM1LjUwODYgNjkuOTE5MiAzNS41MDg2SDY2Ljk2MzhDNjYuODA0IDM1LjUwODYgNjYuNjczNiAzNS4zNzU2IDY2LjY3MzYgMzUuMjEyNlYxOS44NjQ4QzY2LjY3MzYgMTkuNzAxOCA2Ni44MDQgMTkuNTY4OCA2Ni45NjM4IDE5LjU2ODhINjkuOTIyM0M3MC4wODA3IDE5LjU3MDQgNzAuMjA3OSAxOS43MDAyIDcwLjIwNzkgMTkuODZaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNODcuODc1IDM1LjIwNzlWMzMuODQwNUM4Ny44NzUgMzMuNzgyIDg3LjgwMDUgMzMuNzU4MiA4Ny43Njk0IDMzLjgwODlDODcuMDM1MyAzNC45OCA4NS44MTgzIDM1LjcwOTUgODMuOTc1OSAzNS43MjU0QzgxLjY5NzIgMzUuNzQ0NCA3OS44NDU1IDMzLjg1IDc5Ljg0NTUgMzEuNTI2OFYyNC40NDk1Qzc5Ljg0NTUgMjQuMjg2NSA3OS45NzU4IDI0LjE1MzYgODAuMTM1NyAyNC4xNTM2SDgzLjA4NDlDODMuMjQ2MyAyNC4xNTM2IDgzLjM3ODMgMjQuMjg4MSA4My4zNzgzIDI0LjQ1MjdWMzAuNzAzOEM4My4zNzgzIDMxLjk5MjEgODQuNjg1MiAzMi41NjAyIDg1LjU0MDUgMzIuNTYwMkM4Ni41ODk4IDMyLjU2MDIgODcuODc1IDMyLjAxNDIgODcuODc1IDMwLjI2NzFWMjQuNDQ3OUM4Ny44NzUgMjQuMjg0OSA4OC4wMDM4IDI0LjE1MzYgODguMTYzNyAyNC4xNTM2SDkxLjExNDRDOTEuMjc1OSAyNC4xNTM2IDkxLjQwNzggMjQuMjg4MSA5MS40MDc4IDI0LjQ1MjdWMzUuMjExQzkxLjQwNzggMzUuMzc0IDkxLjI3NzQgMzUuNTA3IDkxLjExNzUgMzUuNTA3SDg4LjE2ODNDODguMDA2OSAzNS41MDg1IDg3Ljg3NSAzNS4zNzQgODcuODc1IDM1LjIwNzlaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNOTMuODg4NCAyNC4xNTVIOTYuOTU3MUM5Ny4wODYgMjQuMTU1IDk3LjE5MTUgMjQuMjYxMSA5Ny4xOTE1IDI0LjM5NFYyNS42NjAxQzk3LjE5MTUgMjUuNzIwMiA5Ny4yNjc2IDI1Ljc0MjQgOTcuMjk4NiAyNS42OTE3Qzk3Ljk1NTIgMjQuNjAyOSA5OS4wNDc5IDIzLjkzODIgMTAwLjgzMSAyMy45MzgyQzEwMy40ODcgMjMuOTM4MiAxMDUuOTcxIDI2LjM2MTIgMTA1Ljk3MSAyOS44MzMzQzEwNS45NzEgMzMuMzA1NSAxMDMuNDg3IDM1LjcyODQgMTAwLjgzMSAzNS43Mjg0Qzk5LjAwNiAzNS43Mjg0IDk3LjkwODYgMzUuMDg3NSA5Ny4yNzM4IDM0LjA1NTdDOTcuMjUwNSAzNC4wMTc3IDk3LjE5MTUgMzQuMDM1MSA5Ny4xOTE1IDM0LjA4MVYzOS42MzlDOTcuMTkxNSAzOS43NzAzIDk3LjA4NzUgMzkuODc2NCA5Ni45NTg3IDM5Ljg3NjRIOTMuODlDOTMuNzYyNyAzOS44NzY0IDkzLjY1ODcgMzkuNzcwMyA5My42NTg3IDM5LjY0MDZWMjQuMzkwOUM5My42NTcyIDI0LjI1OTUgOTMuNzYxMiAyNC4xNTUgOTMuODg4NCAyNC4xNTVaTTk5Ljg2NzUgMzIuNTYwMUMxMDEuNDc0IDMyLjU2MDEgMTAyLjQzOCAzMS41NTUyIDEwMi40MzggMjkuODMxOEMxMDIuNDM4IDI4LjEwNjcgMTAxLjQ3NCAyNy4xMDE4IDk5Ljg2NzUgMjcuMTAxOEM5OC4yNjEgMjcuMTAxOCA5Ny4xOSAyOC4xMDY3IDk3LjE5IDI5LjgzMThDOTcuMTkgMzEuNTU2OCA5OC4yNjEgMzIuNTYwMSA5OS44Njc1IDMyLjU2MDFaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMTEzLjc4OCAyOC45MTM4SDExNC42NDRWMjguNzM5OEMxMTQuNjQ0IDI3LjUzODYgMTEzLjc2NiAyNi44ODM0IDExMi40NiAyNi44ODM0QzExMS4wNTkgMjYuODgzNCAxMTAuNDQ0IDI3LjMyODEgMTA5Ljg2MiAyNy44Mzc3QzEwOS43MzYgMjcuOTQ2OSAxMDkuNTQ3IDI3LjkyOTUgMTA5LjQ0MyAyNy43OTY1TDEwNy45NyAyNS45MTAxQzEwNy44NjkgMjUuNzgxOSAxMDcuODkxIDI1LjU5NTIgMTA4LjAxNiAyNS40OTA3QzEwOS4xODUgMjQuNTMxNyAxMTAuNTUgMjMuOTM1MSAxMTIuODAyIDIzLjkzNTFDMTE1Ljg2NCAyMy45MzUxIDExOC4xNzcgMjUuNTk1MiAxMTguMTc3IDI4LjMwMTRWMzUuMjEwOUMxMTguMTc3IDM1LjM3MzkgMTE4LjA0NyAzNS41MDY5IDExNy44ODcgMzUuNTA2OUgxMTQuOTM1QzExNC43NzMgMzUuNTA2OSAxMTQuNjQzIDM1LjM3MzkgMTE0LjY0MyAzNS4yMDkzVjM0LjI0MjRDMTE0LjY0MyAzNC4xODU0IDExNC41NzMgMzQuMTYwMSAxMTQuNTM5IDM0LjIwNDRDMTEzLjc5NyAzNS4xNDc2IDExMi41NzUgMzUuNzI1MyAxMTEuMDAzIDM1LjcyNTNDMTA4Ljg4MyAzNS43MjUzIDEwNy4yMTIgMzQuNjExMSAxMDcuMjEyIDMyLjIzMjVDMTA3LjIxMiAyOS4yODU4IDEwOS43ODMgMjguOTEzOCAxMTMuNzg4IDI4LjkxMzhaTTExMi4yODggMzMuMjE1M0MxMTMuNTMgMzMuMjE1MyAxMTQuNjQ0IDMyLjg4NzcgMTE0LjY0NCAzMS4xNDA1VjMxLjAwNDRDMTE0LjY0NCAzMC45NzEyIDExNC42MTggMzAuOTQ0MyAxMTQuNTg1IDMwLjk0NDNIMTE0LjQzQzExMS42NjcgMzAuOTQ0MyAxMTAuOTYxIDMxLjMxNjIgMTEwLjk2MSAzMi4wNzlDMTEwLjk1OSAzMi44MjI4IDExMS41ODIgMzMuMjE1MyAxMTIuMjg4IDMzLjIxNTNaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMTIyLjkzNSAyNC4zNTNMMTI1LjM4MyAzMS40MjM5QzEyNS40MDEgMzEuNDc2MSAxMjUuNDczIDMxLjQ3NjEgMTI1LjQ5IDMxLjQyMzlMMTI3LjkzNyAyNC4zNTNDMTI3Ljk3OCAyNC4yMzQzIDEyOC4wODggMjQuMTU1MSAxMjguMjExIDI0LjE1NTFIMTMxLjEyM0MxMzEuMzI0IDI0LjE1NTEgMTMxLjQ2NCAyNC4zNTkzIDEzMS4zOTQgMjQuNTUyNEwxMjYuOTM1IDM2LjgxODlDMTI2LjI3IDM4LjkxNDMgMTI0Ljc1MSA0MC4wOTMzIDEyMi44NDUgNDAuMDkzM0MxMjEuNzA3IDQwLjA5MzMgMTIwLjM0NiAzOS41OTk1IDExOS42OTggMzguOTMxN0MxMTkuNjE2IDM4Ljg0NjIgMTE5LjU5NiAzOC43MTggMTE5LjY0NCAzOC42MDg4TDEyMC41MjMgMzYuNTc1MkMxMjAuNTk5IDM2LjM5OCAxMjAuODE4IDM2LjM0NzMgMTIwLjk2OCAzNi40NjZDMTIxLjM4NCAzNi43OTY4IDEyMS44MDUgMzYuOTI2NSAxMjIuMzA5IDM2LjkyNjVDMTIyLjg4MiAzNi45MjY1IDEyMy42NjcgMzYuNjQ4IDEyNC4wMzUgMzUuNjYyMUMxMjQuMDQxIDM1LjY0NjIgMTI0LjA0IDM1LjYyODggMTI0LjAzNCAzNS42MTQ2TDExOS4zOTkgMjQuNTY2NkMxMTkuMzE3IDI0LjM3MiAxMTkuNDU4IDI0LjE1MzYgMTE5LjY2NiAyNC4xNTM2SDEyMi42NkMxMjIuNzg0IDI0LjE1NTEgMTIyLjg5NCAyNC4yMzQzIDEyMi45MzUgMjQuMzUzWiIgZmlsbD0id2hpdGUiLz4KPC9nPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDBfbGluZWFyXzExMl8xMDgzIiB4MT0iMjQuNjkzOCIgeTE9IjQxLjk5NDUiIHgyPSI1My43NDgiIHkyPSIxMy40OTgiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iIzNGMzBEMSIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiM4N0Y4RTAiLz4KPC9saW5lYXJHcmFkaWVudD4KPGNsaXBQYXRoIGlkPSJjbGlwMF8xMTJfMTA4MyI+CjxyZWN0IHdpZHRoPSIxMDcuOTAxIiBoZWlnaHQ9IjMxLjQ4ODUiIGZpbGw9IndoaXRlIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgyMy41MTE1IDExLjc1NTYpIi8+CjwvY2xpcFBhdGg+CjwvZGVmcz4KPC9zdmc+Cg==">
+                </div>
+                <div>
+                    <p>${translations[lang || 'es'].message}</p>
+                    <p>
+                    <a id="focusToKupayWindow" class="kupay-backdrop__focus-to-kupay-window">${translations[lang || 'es'].focusBtn}</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    `
+    class KupayBackdrop extends HTMLElement {
+        constructor() {
+            super();
+            const wrapper = this.attachShadow({ mode: "open" });
+            wrapper.appendChild(template.content.cloneNode(true));
+            const buttonFocus = wrapper.getElementById("focusToKupayWindow")
+            if(buttonFocus) buttonFocus.addEventListener("click",  () => {
+                this.dispatchEvent(new Event("focus-kupay-window"))
+            })
+        }
+    }
+
+    window.customElements.define('kupay-backdrop', KupayBackdrop);
 }
 
 function kupayPDPCheckout() {
