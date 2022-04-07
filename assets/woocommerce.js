@@ -2,6 +2,7 @@ var popupWindow = null;
 buildBackDrop();
 
 function observeCartButton() {
+  
     const addToCartButton = document.querySelector(
         ".single_add_to_cart_button"
     );
@@ -20,6 +21,7 @@ function observeCartButton() {
             kupayBuyButton.classList.remove("kupay-buy-disabled");
         }
     }, 300);
+
 }
 
 observeCartButton();
@@ -160,10 +162,22 @@ function kupayPDPCheckout() {
         "&productId=" + document.getElementById("kupay-product-id").value;
     iframeUrl +=
         "&productName=" + document.getElementById("kupay-product-name").value;
-    iframeUrl +=
-        "&productQuantity=" +
-        document.getElementsByClassName("input-text qty text").quantity
+
+    let productQuantity = 1
+
+    if(document.getElementsByClassName("input-text qty text").length > 0){
+        productQuantity = document.getElementsByClassName("input-text qty text").quantity
             .valueAsNumber;
+    }
+
+    iframeUrl += "&productQuantity=" + productQuantity;
+
+    // iframeUrl +=
+    //     "&productQuantity=" +
+    //     document.getElementsByClassName("input-text qty text").quantity
+    //         .valueAsNumber;
+
+
     iframeUrl += "&productImageUrl=" + "";
     iframeUrl +=
         "&productPrice=" + document.getElementById("kupay-product-price").value;
