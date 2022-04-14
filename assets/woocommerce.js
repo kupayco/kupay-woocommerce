@@ -11,7 +11,6 @@ function observeCartButton() {
 
     setInterval(function () {
         if(popupWindow && popupWindow.closed) {
-            console.log('POPUP WINDOW', popupWindow)
             window.document.querySelector("kupay-backdrop").dispatchEvent(new Event("remove-kupay-backdrop"));
             popupWindow = null
         }
@@ -67,7 +66,7 @@ function kupayBuildIframe(iframeUrl) {
 
 function buildBackDrop() {
     const template = document.createElement("template");
-    const lang = document.documentElement.lang.replace(/[\s\S]{0,3}$/, '')
+    const lang = navigator.language.replace(/[\s\S]{0,3}$/, '')
     const translations = {
         en: {
             message: "No longer see the Kupay window?",
